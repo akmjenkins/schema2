@@ -1,13 +1,20 @@
-export const createValidator = (fn, opts) => {
-  const { allowUndefined = false, onlySchemas = [] } = opts;
+export const createValidator = (fn, opts = {}) => {
+  const {
+    allowUndefined = false,
+    onlySchemas = [],
+    allowNull = false,
+    preCheck,
+  } = opts;
   return (...args) => (value, schemaStuff) => {
     const { schemaType, warn } = schemaStuff;
     if (value === undefined && !allowUndefined) return true;
+    if (value === null && !allowNull) return true;
+    if (preCheck && !preCheck(value)) return true;
     if (onlySchemas.length && !onlySchemas.includes(schemaType)) {
       warn(`Attempted to use validator ${name} on ${schemaType} - ignoring`);
       return true;
     }
-    return fn(...args)(value, schemaStuff);
+    return fn(...args)(value, schemaStuff, passError(schemaStuff.createError));
   };
 };
 
@@ -61,18 +68,6 @@ export const createTypeCheck = (fn) => () => (value, { createError }) =>
 
 export const isRef = (o) => o && Object.prototype.hasOwnProperty.call(o, 'ref');
 
-// then must return a function that, when called, either calls res, rej, or does nothing
-// otherwise must return a function that, when called, calls res, rej, or does nothing
-export const firstToResolve = (then, otherwise, ...results) =>
-  new Promise((res, rej) =>
-    Promise.all(
-      results.map((r, i) => {
-        Promise.resolve(r).then(then(i, res, rej));
-        return r;
-      }),
-    ).then(otherwise(res, rej)),
-  );
-
 export const joinPath = (path) => path.join('.');
 
 export const isEmpty = (o) => !o || !Object.keys(o).length;
@@ -92,3 +87,6 @@ export const reduceInner = (acc, key, { assert, abortEarly }, checker) => {
     results: !results.length ? acc.results : [...acc.results, ...results],
   };
 };
+
+export const passError = (createError) => (error = {}, rest = {}) =>
+  createError(typeof error === 'string' ? error : { ...rest, error });

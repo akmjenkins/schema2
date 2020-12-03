@@ -1,42 +1,77 @@
-# ATLAS+ X
+# Schema2
 
-Cross-Platform (Android/iOS Tablet/Phone) ATLAS application
+Imagining a better JSON schema.
 
-## Core Technologies
+## Why?
 
-- [RxDB](https://github.com/pubkey/rxdb)
-- [Expo](https://expo.io/)
-- [React Native](https://reactnative.dev/)
-- [React Navigation](https://reactnavigation.org/)
+Mainly because JSON schema's syntax is inconsistent. Every draft there's a new keywords being added, it's hard to keep track of them all. Schema2 built upon the [@zuze-lab/schema]() but got rid of the crazy functional complexity.
 
-## Environment Variables
+Popular validators like [ajv](https://github.com/ajv-validator/ajv) or [hyperjump](https://github.com/hyperjump-io/json-schema-validator) are undoubtedly powerful, but, having evolved with JSON schema, have lots of complex configuration options,inconsistent syntax, and are of configuration options and have [become](https://bundlephobia.com/result?p=@hyperjump/json-schema) [bloated](https://bundlephobia.com/result?p=ajv@6.12.6).
 
-- `API_HOST` - path to the API host. e.g. https://api.ashored.ca
-- `MAPBOX_TOKEN` - user token for access to mapbox
-- `API_BASIC_USERNAME` - use basic auth username when accessing the API (for development/staging)
-- `API_BASIC_PASSWORD` - use basic auth username when accessing the API (for development/staging)
 
-## Setup
+## Keywords
 
-`yarn install` followed by `npx pod-install`. Proceed to scripts
+- `type` - specifies the type of schema
+- `label` - a label, helpful, for error messages
+- `tests` - all the validations that you want to do (this is where all the keywords go)
+- `transforms` - ability to transform values
+- `inner` - the inner schema definition for objects and arrays/tuples
+- `conditions` - the ability to modify the validations or transforms of any schema depending on the value being validated or external [context](#context)
 
-## Scripts
 
-`yarn run (android|ios)`
+### Example
 
-Further: see [react native guides](https://reactnative.dev/docs/running-on-device)
+```json
+{
+  "type": "object",
+  "label": "user",
+  "inner": {
+    "firstName": {
+      "type": "string",
+    },
+    "lastName": {
+      "type": "string"
+    }
+  },
+  "tests": [
+    [ "requireFields", "firstName", "lastName"]
+  ]
+  "conditions": [
+    {
+      "when": {
+        "user.firstName": { 
+          "tests": [ "required" ] 
+        }
+      },
+      "then": {
+        "inner": {
+          "lastName": {  
+            "tests": [ "required" ] 
+          }
+        }
+      }
+    }
+  ]
+}
+```
 
-## Overview
+### tests
 
-Core functionality consists of marking buoy locations by "deploying" gear and subsequently recovering it. Timestamps and coordinates are recorded during deployment/recovering. Users can also mark deployed gear as lost (timestamp when it was marked lost will be recoreded)
+#### `required(error?: Partial<ErrorMessage>)`
+- schemas: all
+- allowNull: true
+- allowUndefined: false
 
-## Database
+#### `requireKeys(keys: string[], error?: Partial<ErrorMessage>)`
+- schemas: all
+- allowNull: false
+- allowUndefined: false
 
-The RxDB Database currently consists of 4 collections (schemas available in `lib/rxdb`)
 
-- gear_events - logging deploying/recovering/lost gear
-- trips - trips are simply a start and end location with references to set/recovered gear events
-- user - the logged in user
-- waypoints - user entered waypoints for purposes of marking points-of-interest (POI) on the interface .(not currently used)
+### transforms
 
-The implementation of RxDB is decoupled from the application code by using the react hooks in `lib/Providers/RxDB/hooks`. You are encouraged to NOT interact with RxDB directly from the components, but instead create a hook that provides the desired functionality/query.
+#### common
+#### object
+#### string
+#### boolean
+#### number

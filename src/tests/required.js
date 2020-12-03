@@ -1,9 +1,16 @@
-export default (message) => (value, { schemaType }) => {
-  switch (schemaType) {
-    case 'array':
-    case 'string':
-      return !!(value && value.length > 0) || message;
-    default:
-      return (value !== null && value !== undefined) || message;
-  }
-};
+import { createValidator } from '../utils';
+
+export default createValidator(
+  (error) => (value, { schemaType }, passError) => {
+    switch (schemaType) {
+      case 'array':
+      case 'string':
+        return !!(value && value.length > 0) || passError(error);
+      default:
+        return value !== null || passError(error);
+    }
+  },
+  {
+    allowNull: true,
+  },
+);

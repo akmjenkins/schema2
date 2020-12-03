@@ -1,6 +1,7 @@
 import { parseOperator, isThenable, joinPath } from './utils';
 import errorCreator from './errorCreator';
 import * as warnings from './warnings';
+import { is } from './index';
 
 export default (schema, value, options, resolve) => {
   // if we are can abortEarly, and we get a synchronous error during validation, then don't waste cycle
@@ -22,14 +23,26 @@ export default (schema, value, options, resolve) => {
     // bunch or warnings we have to go through
     // to let the developer know what they might have screwed up
     const createError = errorCreator(name, label, schema, options);
+
+    // allows a validator to run another test by name - i.e. negate
+    const runTest = (name, ...args) =>
+      options.tests[name](...args)(value, testOptions);
+
+    const testOptions = {
+      sync,
+      schemaType: schema.type,
+      resolve,
+      // can't be run async for now
+      // might be able to pass this in through options to avoid cyclical dependencies?
+      is: (schema, value) => is(schema, value, { ...options, sync: true }),
+      createError,
+      runTest,
+      name,
+      warn,
+    };
+
     try {
-      const result = fn(...args)(value, {
-        schemaType: schema.type,
-        resolve,
-        createError,
-        name,
-        warn,
-      });
+      const result = fn(...args)(value, testOptions);
 
       if (isThenable(result)) {
         if (sync) {

@@ -1,4 +1,15 @@
-export default (...schemaDefs) =>
+const mergeInners = (how, ...inners) =>
+  inners.reduce(
+    (acc, i = {}) =>
+      // merge the schema definitions at the keys
+      Object.entries(i).reduce(
+        (acc, [k, v]) => ({ ...acc, [k]: acc[k] ? how(acc[k], v) : v }),
+        acc,
+      ),
+    {},
+  );
+
+const mergeDefs = (...schemaDefs) =>
   schemaDefs.reduce(
     (
       acc,
@@ -9,17 +20,24 @@ export default (...schemaDefs) =>
         nullable,
         default: def,
         label,
+        inner,
         ...rest
       } = {},
     ) => ({
       type: 'mixed',
       ...acc,
       ...rest,
+      inner:
+        acc.inner || inner
+          ? mergeInners(mergeDefs, inner, acc.inner)
+          : undefined,
       conditions: [...(acc.conditions || []), ...conditions],
       transforms: [...(acc.transforms || []), ...transforms],
       tests: [...(acc.tests || []), ...tests],
-      nullable: typeof nullable === 'undefined' ? acc.nullable : nullable,
-      default: typeof def === 'undefined' ? acc.default : def,
-      label: typeof label === 'undefined' ? acc.label : label,
+      nullable: nullable === undefined ? acc.nullable : nullable,
+      default: def === undefined ? acc.default : def,
+      label: label === undefined ? acc.label : label,
     }),
   );
+
+export default mergeDefs;

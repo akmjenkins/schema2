@@ -6,6 +6,7 @@ import { joinPath } from './utils';
 // as long as we keep track of where we are in the tree with the path
 // this resolver can always be used to resolve any schema/value, regardless of where we are in the tree
 // extra: pass check in for dependency inversion
+
 export const createResolver = (rootSchema, rootValue, options, check) => {
   // speed stuff up
   const cache = {};
@@ -18,6 +19,28 @@ export const createResolver = (rootSchema, rootValue, options, check) => {
     const { contextPrefix, context } = options;
 
     const isContext = path[0] === contextPrefix;
+    // get the value from context, whatever it is
+    // this is a good way to include schemas for reuse:
+
+    /**
+     * {
+     *    type: 'object',
+     *    inner: {
+     *        someKey: {ref: '$schemas.schemaA'}
+     *    }
+     * },
+     * someValue,
+     * {
+     *  context: {
+     *   schemas: {
+     *     schemaA: ...someSchemaDefinition
+     *     schemaB: ...someSchemaDefinition
+     *   }
+     *  }
+     * }
+     *
+     */
+
     if (isContext) return get(context, path.slice(1));
 
     const [valuePath, schemaPath] = parsePath(path, currentPath);
@@ -25,8 +48,8 @@ export const createResolver = (rootSchema, rootValue, options, check) => {
     if (Object.prototype.hasOwnProperty.call(cache, valuePath))
       return cache[valuePath];
 
-    const resolvedSchema = get(rootSchema, joinPath(schemaPath));
     const resolvedValue = get(rootValue, joinPath(valuePath));
+    const resolvedSchema = get(rootSchema, joinPath(schemaPath));
 
     return (cache[valuePath] = !resolvedSchema
       ? resolvedValue

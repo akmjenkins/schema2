@@ -13,6 +13,8 @@ const defaultMessages = {
   is: '${label} must be ${value}',
   includes: '${label} must include ${value}',
   matches: '${label} must match ${regexp}',
+  requireKeys: ({ label, missing }) =>
+    `${label} is missing the following required keys: ${missing.join(', ')}`,
   typeError:
     '${label} must be a ${schema} type, unable to coerce/use value ${value}',
   oneOf: ({ label, values }) =>
@@ -43,11 +45,13 @@ export default (map) => ({
   ...(map || {}),
 });
 
-export const messageForError = (error, messages) =>
-  interpolate(
+export const messageForError = (error, messages) => {
+  const message =
     error.message ||
-      messages[`${error.schema}.${error.type}`] ||
-      messages[`${error.type}`] ||
-      messages['default'],
-    error.params,
-  );
+    messages[`${error.schema}.${error.type}`] ||
+    messages[`${error.type}`] ||
+    messages['default'];
+  return typeof message === 'function'
+    ? message(error.params)
+    : interpolate(message, error.params);
+};

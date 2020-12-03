@@ -1,6 +1,13 @@
-export default (against, message) => (value, { createError, resolve }) => {
-  const resolved = resolve(against);
-  return (
-    value === resolved || createError({ message, params: { value: resolved } })
-  );
-};
+import { createValidator, isRef } from '../utils';
+
+export default createValidator(
+  (against, error) => (value, { resolve }, passError) => {
+    const resolved = resolve(against);
+    return (
+      value === resolved ||
+      passError(error, {
+        params: { value: isRef(against) ? against.ref : resolved },
+      })
+    );
+  },
+);

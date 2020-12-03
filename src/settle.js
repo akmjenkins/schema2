@@ -1,16 +1,13 @@
 import check from './check';
-import defaults from './defaults';
 import ValidationError from './ValidationError';
 import { hasSynchronousError, isThenable } from './utils';
 
 const settle = (schema, value, options) => {
-  options = defaults(options, { schema, value });
   const { sync, assert, abortEarly, multiple } = options;
-  // results is always an array of tuples that look like [ path, results[] ]
   const { value: finalValue, results } = check(schema, value, options);
 
   const done = (errors = []) => {
-    if (errors.length) throw new ValidationError(errors, multiple);
+    if (errors.length) throw new ValidationError(errors);
     return finalValue;
   };
 

@@ -36,6 +36,7 @@ const checkInner = (inner, schema, value, options) => {
   }
 
   warnings.innerSchemaUnsupported(warn, type);
+  return { value, results: [] };
 };
 
 // accepts a schema, value, and options

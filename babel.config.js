@@ -5,7 +5,7 @@ module.exports = {
       {
         targets: {
           node: '10.4.0',
-          browsers: ['> 1%', 'last 2 versions'],
+          // browsers: ['> 1%', 'last 2 versions'],
         },
       },
     ],

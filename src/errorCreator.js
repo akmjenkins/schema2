@@ -3,7 +3,10 @@ import { messageForError } from './messages';
 export default (name, label, schema, options) => (opts = {}) => {
   const { messages } = options;
 
-  opts = typeof opts === 'string' ? { message: opts } : opts;
+  opts =
+    typeof opts === 'string' || typeof opts === 'function'
+      ? { message: opts }
+      : opts;
 
   const innerName = opts.name || name;
   const innerParams = {

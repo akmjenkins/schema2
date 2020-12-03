@@ -1,5 +1,5 @@
 import merge from './merge';
-import is from './is';
+import check from './check';
 
 export default (schema, resolver, options) => {
   const { conditions = [], ...rest } = schema;
@@ -11,13 +11,14 @@ export default (schema, resolver, options) => {
       );
 };
 
+// scope is just the starting path
 const resolveCondition = (
   { when, then = {}, otherwise = {} },
   resolver,
   options,
 ) =>
   (Array.isArray(when) ? when : [when]).some((inner) => {
-    return is(
+    return check(
       { type: 'object', inner },
       Object.keys(inner).reduce(
         (acc, ref) => ({ ...acc, [ref]: resolver({ ref }) }),
@@ -27,6 +28,9 @@ const resolveCondition = (
         ...options,
         // right now conditions can only be run synchronously
         sync: true,
+        assert: true,
+        abortEarly: true,
+        multiple: false,
         debug: (...args) => {
           if (!options.debug) return;
           options.debug(

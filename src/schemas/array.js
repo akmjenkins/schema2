@@ -1,6 +1,5 @@
 import { get } from '@zuze/interpolate';
 import { createTypeCheck } from '../utils';
-// import matches from '../is';
 
 const arrayTransform = () => (val) => {
   if (typeof val === 'string')

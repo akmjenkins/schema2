@@ -13,20 +13,21 @@ export default createValidator(
       lower: isRef(lower) ? lower.ref : lower,
       upper: isRef(upper) ? upper.ref : upper,
     };
+
+    const err = passError(error, { params });
+
     switch (schemaType) {
       case 'string':
         return (
           (inclusive
             ? value.length <= upperBound && value.length >= lowerBound
-            : value.length < upperBound && value.length > lowerBound) ||
-          passError(error, { params })
+            : value.length < upperBound && value.length > lowerBound) || err
         );
       case 'number':
         return (
           (inclusive
             ? value <= upperBound && value >= lowerBound
-            : value < upperBound && value > lowerBound) ||
-          passError(error, { params })
+            : value < upperBound && value > lowerBound) || err
         );
       case 'array': {
         // allow validating an array to make sure it's contents contain
@@ -36,8 +37,7 @@ export default createValidator(
         return (
           (inclusive
             ? v.length <= upperBound && v.length >= lowerBound
-            : v.length < upperBound && v.length > lowerBound) ||
-          passError(error, { params })
+            : v.length < upperBound && v.length > lowerBound) || err
         );
       }
     }

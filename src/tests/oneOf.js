@@ -9,6 +9,6 @@ export default createValidator(
     );
   },
   {
-    onlySchemas: ['string'],
+    onlySchemas: ['string', 'number'],
   },
 );

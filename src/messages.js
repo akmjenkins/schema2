@@ -37,6 +37,7 @@ const defaultMessages = {
     `${label} must be after ${min.getTime ? min.toISOString() : min}`,
   'array.min': '${label} must have at least ${min} items',
   'number.min': '${label} must be no less than ${min}',
+  unique: '${label} must only contain unique elements',
   email: '${label} must be a valid e-mail address',
 };
 

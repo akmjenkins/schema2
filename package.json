@@ -27,9 +27,6 @@
   },
   "author": "Adam Jenkins",
   "license": "ISC",
-  "dependencies": {
-    "@zuze/interpolate": "^6.1.1"
-  },
   "optionalDependencies": {
     "date-fns": "^2.9.0"
   },

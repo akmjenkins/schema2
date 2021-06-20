@@ -1,22 +1,11 @@
-import { createTypeCheck } from '../utils';
-
-const numberTransform = () => (value) => {
-  if (typeof value === 'string') {
-    const next = value.replace(/\s/g, '');
-    if (!next) return NaN;
-    return +next;
-  }
-  return parseFloat(value);
-};
-const numberTypeCheck = createTypeCheck(
-  (val) => val instanceof Number || (typeof val === 'number' && !isNaN(val)),
-);
+import { createTypeCheck, includeTransforms } from '../utils';
+import * as numberTransforms from '../transforms/number';
+import numberTypeCheck from '../tests/types/number';
 
 export const schema = {
   transforms: ['numberTransform'],
   tests: ['numberTypeCheck'],
 };
 
-export const tests = { numberTypeCheck };
-
-export const transforms = { numberTransform };
+export const tests = { numberTypeCheck: createTypeCheck(numberTypeCheck) };
+export const transforms = includeTransforms(numberTransforms, ['number']);

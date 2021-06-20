@@ -1,28 +1,37 @@
 import { parseOperator, isThenable, joinPath } from './utils';
 import errorCreator from './errorCreator';
 import * as warnings from './warnings';
-import { is } from './index';
 
 export default (schema, value, options, resolve) => {
   // if we are can abortEarly, and we get a synchronous error during validation, then don't waste cycle
   let shouldKeepRunning = true;
-  const { assert, sync, warn, multiple, path } = options;
+  const { assert, sync, warn, multiple, path, is } = options;
   if (!assert) return [];
 
   // an test must return true, false, or an error message or a Promise resolving to such
   // it cannot throw an error or reject
   // if it does, then schema2 will throw an error
+
+  // schema.tests might be an object!!
+
+  // NOTE: tests could be an object instead of an array
   const results = schema.tests.reduce((acc, t) => {
     if (!shouldKeepRunning) return acc;
 
     const [name, ...args] = parseOperator(t);
     const fn = options.tests[name];
-    if (!fn) throw new Error(`No test with name ${name} found`);
+    if (!fn) {
+      warn(warnings.noOperator('test', name));
+      return acc;
+    }
     const label = schema.label || joinPath(path) || 'field';
 
     // bunch or warnings we have to go through
     // to let the developer know what they might have screwed up
-    const createError = errorCreator(name, label, schema, options);
+    const createError = errorCreator(name, label, schema, {
+      params: { value },
+      ...options,
+    });
 
     // allows a validator to run another test by name - i.e. negate
     const runTest = (name, ...args) =>
@@ -32,8 +41,6 @@ export default (schema, value, options, resolve) => {
       sync,
       schemaType: schema.type,
       resolve,
-      // can't be run async for now
-      // might be able to pass this in through options to avoid cyclical dependencies?
       is: (schema, value) => is(schema, value, { ...options, sync: true }),
       createError,
       runTest,
@@ -46,16 +53,17 @@ export default (schema, value, options, resolve) => {
 
       if (isThenable(result)) {
         if (sync) {
-          warnings.syncReturnedAsync(warn, name, label);
-          result
-            .then(
-              (e) =>
-                e !== true &&
-                warnings.syncReturnedAsyncAndFailed(warn, name, label, e),
-            )
-            .catch((err) =>
-              warnings.syncReturnedAsyncAndThrew(warn, name, label, err),
-            );
+          warn(warnings.syncReturnedAsync(name, label)),
+            result
+              .then(
+                (e) =>
+                  e !== true &&
+                  warn(warnings.syncReturnedAsyncAndFailed(name, label, e)),
+              )
+              .catch((err) => {
+                // no need to rethrow, this result is ignored anyway
+                warn(warnings.syncReturnedAsyncAndThrew(name, label), err);
+              });
           return acc;
         }
 
@@ -64,8 +72,8 @@ export default (schema, value, options, resolve) => {
           result
             .then((e) => e || createError())
             .catch((err) => {
-              warnings.asyncThrew(warn, name, label, err);
-              return createError();
+              warn(warnings.asyncThrew(name, label));
+              throw err;
             }),
         ];
       }
@@ -79,8 +87,8 @@ export default (schema, value, options, resolve) => {
       // otherwise return a tuple of an error message and the path
       return result === true ? acc : [...acc, result || createError()];
     } catch (err) {
-      warnings.syncThrew(warn, name, label, err);
-      return acc;
+      warn(warnings.syncThrew(name, label), err);
+      throw err;
     }
   }, []);
 

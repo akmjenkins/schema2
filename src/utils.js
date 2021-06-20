@@ -1,20 +1,22 @@
 export const createValidator = (fn, opts = {}) => {
   const {
-    allowUndefined = false,
+    allowUndefined = false, // this thing right here!!!! why?
     onlySchemas = [],
     allowNull = false,
     preCheck,
   } = opts;
   return (...args) => (value, schemaStuff) => {
-    const { schemaType, warn } = schemaStuff;
+    const { schemaType, warn, createError } = schemaStuff;
     if (value === undefined && !allowUndefined) return true;
     if (value === null && !allowNull) return true;
     if (preCheck && !preCheck(value)) return true;
     if (onlySchemas.length && !onlySchemas.includes(schemaType)) {
-      warn(`Attempted to use validator ${name} on ${schemaType} - ignoring`);
+      warn(
+        `Attempted to use validator for ${onlySchemas} on ${schemaType} - ignoring`,
+      );
       return true;
     }
-    return fn(...args)(value, schemaStuff, passError(schemaStuff.createError));
+    return fn(...args)(value, schemaStuff, passError(createError));
   };
 };
 
@@ -26,7 +28,9 @@ export const createTransform = (fn, opts) => (...args) => (
   const { onlySchemas = [] } = opts;
   const { warn, schemaType } = schemaStuff;
   if (onlySchemas.length && !onlySchemas.includes(schemaType)) {
-    warn(`Attempted to use transform ${name} on ${schemaType} - ignoring`);
+    warn(
+      `Attempted to use transform for ${onlySchemas} on ${schemaType} - ignoring`,
+    );
     return value;
   }
   return fn(...args)(value, originalValue, schemaStuff);
@@ -66,7 +70,10 @@ export const isObject = (o) =>
 export const createTypeCheck = (fn) => () => (value, { createError }) =>
   value === undefined || fn(value) || createError({ name: 'typeError' });
 
-export const isRef = (o) => o && Object.prototype.hasOwnProperty.call(o, 'ref');
+export const hasOwnProp = (o, prop) =>
+  o && Object.prototype.hasOwnProperty.call(o, prop);
+
+export const isRef = (o) => hasOwnProp(o, 'ref');
 
 export const joinPath = (path) => path.join('.');
 
@@ -80,13 +87,28 @@ export const reduceInner = (acc, key, { assert, abortEarly }, checker) => {
 
   const { value, results } = checker();
 
+  // mimic yup behavior - only include the property if it has a value or it exists in the value being cast/validated
+  const shouldInclude =
+    Array.isArray(acc.value) || value || hasOwnProp(acc.value, key);
+
   return {
     value: Array.isArray(acc.value)
       ? [...acc.value, value]
-      : { ...acc.value, [key]: value },
+      : shouldInclude
+      ? { ...acc.value, [key]: value }
+      : acc.value,
     results: !results.length ? acc.results : [...acc.results, ...results],
   };
 };
 
 export const passError = (createError) => (error = {}, rest = {}) =>
   createError(typeof error === 'string' ? error : { ...rest, error });
+
+export const includeTransforms = (transformMap, onlySchemas) =>
+  Object.entries(transformMap).reduce(
+    (acc, [name, transform]) => ({
+      ...acc,
+      [name]: createTransform(transform, { name, onlySchemas }),
+    }),
+    {},
+  );

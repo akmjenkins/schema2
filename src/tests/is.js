@@ -6,7 +6,9 @@ export default createValidator(
     return (
       value === resolved ||
       passError(error, {
-        params: { value: isRef(against) ? against.ref : resolved },
+        params: {
+          value: isRef(against) ? against.ref : resolved,
+        },
       })
     );
   },

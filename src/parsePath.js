@@ -1,4 +1,4 @@
-import { parts } from '@zuze/interpolate';
+import { parts } from './get';
 
 /*
 relative paths are prefixed by a .

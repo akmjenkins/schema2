@@ -18,7 +18,6 @@ const mergeDefs = (...schemaDefs) =>
         transforms = [],
         conditions = [],
         nullable,
-        default: def,
         label,
         inner,
         ...rest
@@ -35,9 +34,9 @@ const mergeDefs = (...schemaDefs) =>
       transforms: [...(acc.transforms || []), ...transforms],
       tests: [...(acc.tests || []), ...tests],
       nullable: nullable === undefined ? acc.nullable : nullable,
-      default: def === undefined ? acc.default : def,
       label: label === undefined ? acc.label : label,
     }),
+    {},
   );
 
 export default mergeDefs;

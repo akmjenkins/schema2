@@ -1,8 +1,9 @@
 const count = (num) =>
   `${num} error${num === 1 ? '' : 's'} occurred during validation`;
 
-class ValidationError {
+class ValidationError extends Error {
   constructor(errors, root = true) {
+    super();
     if (root) {
       this.path = undefined;
       const all = errors.reduce((acc, [, es]) => [...acc, ...es], []);

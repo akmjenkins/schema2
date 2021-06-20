@@ -1,12 +1,8 @@
-import { number, string, object, boolean, mixed, array } from './schemas';
-import * as defaultTests from './tests';
-import defaultMessages from './messages';
-
 export default ({
   schemas = {},
   transforms = {},
   tests = {},
-  messages,
+  messages = {},
   debug = console.warn,
   ...rest
 } = {}) => ({
@@ -16,36 +12,24 @@ export default ({
   contextPrefix: '$', // how to reference context
   context: {}, // can be used in conditions/refs
   strict: false, // whether to run transforms
+  coerce: false,
   assert: true, // whether to validate
-  messages: defaultMessages(messages), // error messages map
+  messages: {
+    ...(rest.messages || {}),
+    ...messages,
+  },
   debug, // where to print debug messages - pass false for no output
   warn: (...args) => debug && debug(...args),
   schemas: {
-    object: object.schema,
-    number: number.schema,
-    string: string.schema,
-    array: array.schema,
-    mixed: mixed.schema,
-    boolean: boolean.schema,
+    ...(rest.schemas || {}),
     ...schemas,
   },
   transforms: {
-    ...object.transforms,
-    ...number.transforms,
-    ...string.transforms,
-    ...array.transforms,
-    ...mixed.transforms,
-    ...boolean.transforms,
+    ...(rest.transforms || {}),
     ...transforms,
   },
   tests: {
-    ...defaultTests,
-    ...object.tests,
-    ...number.tests,
-    ...string.tests,
-    ...array.tests,
-    ...mixed.tests,
-    ...boolean.tests,
+    ...(rest.tests || {}),
     ...tests,
   },
   path: [],

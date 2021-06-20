@@ -15,27 +15,25 @@ const checkInner = (inner, schema, value, options) => {
     value = value || [];
     const isTuple = Array.isArray(inner);
     return (isTuple ? inner : value).reduce(
-      (acc, v, i) => {
-        return reduceInner(acc, i, options, () =>
+      (acc, v, i) =>
+        reduceInner(acc, i, options, () =>
           check(isTuple ? v : inner, value[i], nextOptions(options, i)),
-        );
-      },
+        ),
       { value: [], results: [] },
     );
   }
 
   if (type === 'object') {
     return Object.entries(inner).reduce(
-      (acc, [key, schemaOrRef]) => {
-        return reduceInner(acc, key, options, () =>
-          check(schemaOrRef, (value || {})[key], nextOptions(options, key)),
-        );
-      },
-      { value: {}, results: [] },
+      (acc, [key, schemaOrRef]) =>
+        reduceInner(acc, key, options, () =>
+          check(schemaOrRef, acc.value[key], nextOptions(options, key)),
+        ),
+      { value: value || {}, results: [] },
     );
   }
 
-  warnings.innerSchemaUnsupported(warn, type);
+  warn(warnings.innerSchemaUnsupported(type));
   return { value, results: [] };
 };
 
@@ -64,15 +62,16 @@ const check = (schema, value, options) => {
   if (fork !== schema) return check(fork, value, options);
 
   // reduce the transforms to get the final value
-  value = runTransforms(schema, value, options);
+  value = runTransforms(schema, value, options, thisResolver);
 
   // pass in the resolver
   const testResults = runTests(schema, value, options, thisResolver);
   const results = testResults.length ? [[joinPath(path), testResults]] : [];
 
   // If there are any errors returned here and we are sync, assert, and abortEarly, we can return right away
-  if (sync && assert && abortEarly && testResults.length)
+  if (sync && assert && abortEarly && testResults.length) {
     return { value, results };
+  }
 
   // checkInner must return value and errors - and check must return value and errors!
   const { inner } = schema;
@@ -80,9 +79,7 @@ const check = (schema, value, options) => {
     ? checkInner(inner, schema, value, options)
     : { value, results: [] };
 
-  value = innerValue !== undefined ? innerValue : schema.default;
-
-  return { value, results: [...results, ...innerResults] };
+  return { value: innerValue, results: [...results, ...innerResults] };
 };
 
 export default check;

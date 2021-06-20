@@ -11,6 +11,7 @@ export default createValidator(
     }
   },
   {
+    allowUndefined: true,
     allowNull: true,
   },
 );

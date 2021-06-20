@@ -1,6 +1,7 @@
-export * as string from './string';
-export * as boolean from './boolean';
-export * as mixed from './mixed';
-export * as number from './number';
-export * as array from './array';
-export * as object from './object';
+import * as string from './string';
+import * as boolean from './boolean';
+import * as mixed from './mixed';
+import * as number from './number';
+import * as array from './array';
+import * as object from './object';
+export { string, boolean, mixed, number, array, object };

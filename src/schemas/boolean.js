@@ -1,21 +1,11 @@
-import { createTypeCheck } from '../utils';
-
-const booleanTransform = () => (value) => {
-  if (/^(true|1)$/i.test(value)) return true;
-  if (/^(false|0)$/i.test(value)) return false;
-  return value;
-};
-
-const booleanTypeCheck = createTypeCheck(
-  (val) => val instanceof Boolean || typeof val === 'boolean',
-);
+import { createTypeCheck, includeTransforms } from '../utils';
+import booleanTypeCheck from '../tests/types/boolean';
+import * as booleanTransforms from '../transforms/boolean';
 
 export const schema = {
   transforms: ['booleanTransform'],
   tests: ['booleanTypeCheck'],
 };
 
-export const tests = { booleanTypeCheck };
-
-export const transforms = { booleanTransform };
-export const typeChecks = { booleanTypeCheck };
+export const tests = { booleanTypeCheck: createTypeCheck(booleanTypeCheck) };
+export const transforms = includeTransforms(booleanTransforms, ['boolean']);

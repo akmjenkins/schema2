@@ -1,11 +1,10 @@
-import { get } from '@zuze/interpolate';
+import { get } from './get';
 import parsePath from './parsePath';
-import { joinPath } from './utils';
+import { hasOwnProp, joinPath } from './utils';
 
 // create a root level resolver
 // as long as we keep track of where we are in the tree with the path
-// this resolver can always be used to resolve any schema/value, regardless of where we are in the tree
-// extra: pass check in for dependency inversion
+// this resolver can always be used to resolve any schema/value
 
 export const createResolver = (rootSchema, rootValue, options, check) => {
   // speed stuff up
@@ -40,13 +39,11 @@ export const createResolver = (rootSchema, rootValue, options, check) => {
      * }
      *
      */
-
     if (isContext) return get(context, path.slice(1));
 
     const [valuePath, schemaPath] = parsePath(path, currentPath);
     // if this value has already been retrieved
-    if (Object.prototype.hasOwnProperty.call(cache, valuePath))
-      return cache[valuePath];
+    if (hasOwnProp(cache, valuePath)) return cache[valuePath];
 
     const resolvedValue = get(rootValue, joinPath(valuePath));
     const resolvedSchema = get(rootSchema, joinPath(schemaPath));

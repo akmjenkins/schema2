@@ -1,7 +1,7 @@
 import { messageForError } from './messages';
 
 export default (name, label, schema, options) => (opts = {}) => {
-  const { messages } = options;
+  const { messages, params = {} } = options;
 
   opts =
     typeof opts === 'string' || typeof opts === 'function'
@@ -18,7 +18,7 @@ export default (name, label, schema, options) => (opts = {}) => {
   return messageForError(
     {
       message: opts.message,
-      params: innerParams,
+      params: { ...params, ...innerParams },
       schema: schema.type,
       type: innerName,
     },

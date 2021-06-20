@@ -14,3 +14,4 @@ export { default as min } from './min';
 export { default as max } from './max';
 export { default as exactly } from './exactly';
 export { default as combine } from './combine';
+export { default as unique } from './unique';

@@ -1287,11 +1287,6 @@
     "@typescript-eslint/types" "4.8.2"
     eslint-visitor-keys "^2.0.0"
 
-"@zuze/interpolate@^6.1.1":
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/@zuze/interpolate/-/interpolate-6.2.1.tgz#647bbf6741a4fee621e7f5807a6e7d961a62a2b3"
-  integrity sha512-Er1YibvkJkCUKuEFwgSFgdq+d1RaYciyciSUfIMw5HEEmZCNfY1PTQTKHF6r3y7SId7ElKhEGm4FYeoqB3TOyA==
-
 abab@^2.0.3:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
@@ -4970,6 +4965,18 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+sugar-core@^2.0.0:
+  version "2.0.6"
+  resolved "https://a0us.jfrog.io/a0us/api/npm/npm/sugar-core/-/sugar-core-2.0.6.tgz#785e0cd64aa7302ea54d47bc1213efe52c006270"
+  integrity sha1-eF4M1kqnMC6lTUe8EhPv5SwAYnA=
+
+sugar-date@^2.0.6:
+  version "2.0.6"
+  resolved "https://a0us.jfrog.io/a0us/api/npm/npm/sugar-date/-/sugar-date-2.0.6.tgz#cbfb25e1e1e5cfeec551aa9f302ed763a3778b02"
+  integrity sha1-y/sl4eHlz+7FUaqfMC7XY6N3iwI=
+  dependencies:
+    sugar-core "^2.0.0"
 
 supports-color@^2.0.0:
   version "2.0.0"

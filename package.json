@@ -28,7 +28,8 @@
   "author": "Adam Jenkins",
   "license": "ISC",
   "optionalDependencies": {
-    "date-fns": "^2.9.0"
+    "date-fns": "^2.9.0",
+    "sugar-date": "^2.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",

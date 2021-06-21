@@ -1,10 +1,34 @@
-import { nextOptions, reduceInner, joinPath } from './utils';
+import {
+  nextOptions,
+  hasSynchronousError,
+  hasOwnProp,
+  joinPath,
+} from './utils';
 import merge from './merge';
 import { createResolver } from './resolve';
 import resolveSchema from './resolveSchema';
 import runTransforms from './runTransforms';
 import runTests from './runTests';
 import * as warnings from './warnings';
+
+const reduceInner = (acc, key, { assert, abortEarly }, checker) => {
+  if (assert && abortEarly && hasSynchronousError(acc.results)) return acc;
+
+  const { value, results } = checker();
+
+  // mimic yup behavior - only include the property if it has a value or it exists in the value being cast/validated
+  const shouldInclude =
+    Array.isArray(acc.value) || value || hasOwnProp(acc.value, key);
+
+  return {
+    value: Array.isArray(acc.value)
+      ? [...acc.value, value]
+      : shouldInclude
+      ? { ...acc.value, [key]: value }
+      : acc.value,
+    results: !results.length ? acc.results : [...acc.results, ...results],
+  };
+};
 
 // inner "check"ing of schemas
 const checkInner = (inner, schema, value, options) => {
@@ -49,6 +73,8 @@ const check = (schema, value, options) => {
   const thisResolver = resolver(path);
 
   const { type, ref } = schema;
+
+  if (!schemas[type]) throw new Error(`No schema found for ${type}`);
 
   // if we're checking a ref, just return the value
   if (ref) return thisResolver(schema);

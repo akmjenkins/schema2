@@ -23,7 +23,12 @@ export default (schema, value, options, resolve) => {
 
     const transformOptions = {
       schemaType: type,
-      warn,
+      warn: (warning) =>
+        warn(
+          `Received warning for transform ${name} at ${options.path.join(
+            '.',
+          )} - ${warning}`,
+        ),
       resolve,
       is: (schema, value) => is(schema, value, { ...options, sync: true }),
     };

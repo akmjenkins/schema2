@@ -45,7 +45,12 @@ export default (schema, value, options, resolve) => {
       createError,
       runTest,
       name,
-      warn,
+      warn: (warning) =>
+        warn(
+          `Received warning for test ${name} at ${options.path.join(
+            '.',
+          )} - ${warning}`,
+        ),
     };
 
     try {

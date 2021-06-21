@@ -1,5 +1,4 @@
 import merge from './merge';
-import is from './is';
 
 export default (schema, resolver, options) => {
   const { conditions = [], ...rest } = schema;
@@ -15,6 +14,8 @@ const resolveCondition = ({ when, then, otherwise }, resolver, options) => {
   if (!then && !otherwise) {
     throw new Error('One of then or otherwise must be defined');
   }
+
+  const { is } = options;
 
   return (
     ((Array.isArray(when) ? when : [when]).some((inner) => {

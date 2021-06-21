@@ -20,7 +20,7 @@ export const createValidator = (fn, opts = {}) => {
   };
 };
 
-export const createTransform = (fn, opts) => (...args) => (
+export const createTransform = (fn, opts = {}) => (...args) => (
   value,
   originalValue,
   schemaStuff,
@@ -52,18 +52,8 @@ export const nextOptions = (options, path) => ({
 
 export const nextPath = ({ path }, next) => [...path, next];
 
-// a validator must always return true, false, or use createError(), or a promise that results to true, false, or use createError()
-// if a validator throws an error, then it screws everything up
-
-const isValidationError = (o) => o && o.__validationError;
-
 export const isThenable = (w) => w && typeof w.then === 'function';
 
-export const collectErrors = (fn) => {
-  const result = fn();
-  const done = (v) => (v && !isValidationError(v) ? [] : [v]);
-  return isThenable(result) ? result.then(done) : done(result);
-};
 export const isObject = (o) =>
   Object.prototype.toString.call(o) === '[object Object]';
 
@@ -81,25 +71,6 @@ export const isEmpty = (o) => !o || !Object.keys(o).length;
 
 export const hasSynchronousError = (results) =>
   results.length && results.some(([, i]) => i.some((e) => e && !isThenable(e)));
-
-export const reduceInner = (acc, key, { assert, abortEarly }, checker) => {
-  if (assert && abortEarly && hasSynchronousError(acc.results)) return acc;
-
-  const { value, results } = checker();
-
-  // mimic yup behavior - only include the property if it has a value or it exists in the value being cast/validated
-  const shouldInclude =
-    Array.isArray(acc.value) || value || hasOwnProp(acc.value, key);
-
-  return {
-    value: Array.isArray(acc.value)
-      ? [...acc.value, value]
-      : shouldInclude
-      ? { ...acc.value, [key]: value }
-      : acc.value,
-    results: !results.length ? acc.results : [...acc.results, ...results],
-  };
-};
 
 export const passError = (createError) => (error = {}, rest = {}) =>
   createError(typeof error === 'string' ? error : { ...rest, error });

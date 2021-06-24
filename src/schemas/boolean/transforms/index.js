@@ -1,1 +1,1 @@
-export { default as booleanTransform } from './booleanTransform';
+export { default as base } from './base';

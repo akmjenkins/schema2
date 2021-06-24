@@ -1,6 +1,4 @@
-import settle from './settle';
-import ValidationError from './ValidationError';
-import defaults from './defaults';
+import { ValidationError, settle, defaults } from './core';
 
 const is = (schema, value, options) => {
   options = defaults(options);

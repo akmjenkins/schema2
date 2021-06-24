@@ -1,4 +1,8 @@
-// empty
-export const schema = {};
-export const tests = {};
-export const transforms = {};
+import * as tests from './tests';
+import * as transforms from './transforms';
+
+export default {
+  tests,
+  transforms,
+  base: {},
+};

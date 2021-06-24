@@ -1,15 +1,11 @@
-import { createTypeCheck, includeTransforms } from '../../utils';
-import * as numberTransforms from './transforms';
-import * as numberTests from './tests';
+import * as transforms from './transforms';
+import * as tests from './tests';
 
-const numberTypeCheck = createTypeCheck(
-  (val) => val instanceof Number || (typeof val === 'number' && !isNaN(val)),
-);
-
-export const schema = {
-  transforms: ['numberTransform'],
-  tests: ['numberTypeCheck'],
+export default {
+  tests,
+  transforms,
+  base: {
+    transforms: ['base'],
+    tests: ['typeCheck'],
+  },
 };
-
-export const tests = { numberTypeCheck, ...numberTests };
-export const transforms = includeTransforms(numberTransforms, ['number']);

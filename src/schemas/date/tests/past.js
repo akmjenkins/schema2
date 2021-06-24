@@ -1,8 +1,16 @@
-import { Date as SDate } from 'sugar-date';
-import { createValidator } from '../../../utils';
+export default ({ now }) => ({ error }) => (value, _, passError) =>
+  value < now() || passError(error);
 
-export default createValidator(
-  (error) => (value, _, passError) =>
-    new SDate(value).isPast().raw || passError(error),
-  { allowSchemas: ['date'] },
-);
+/*
+ params is the straight up params
+ {
+     params: { ...straight up params },
+     refs: { g: {
+         value:'',
+         label:''
+     }}
+ }
+//
+//
+//
+*/

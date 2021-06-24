@@ -19,6 +19,7 @@ The only keywords you need to know about for *Schema2* are:
 - `transforms` - ability to transform values
 - `inner` - the inner schema definition for objects and arrays/tuples
 - `conditions` - the ability to modify the validations or transforms of any schema depending on the value being validated or external [context](#context)
+- `nullable` - null and undefined are treated as special values. Tests **WILL NOT** be run on null and undefined values. A special `nonNullable` error will be returned for a given schema if null is received as a value for a schema where `nullable` is false
 
 ### Batteries Included vs Minimalistic
 
@@ -48,19 +49,22 @@ These are the list of validators shipped with `schema2`:
     }
   },
   "tests": [
-    [ "requireFields", "firstName", "lastName"]
+    {
+      "name": "requireFields",
+      "fields": ["firstName","lastName"]
+    }
   ],
   "conditions": [
     {
       "when": {
         "user.firstName": { 
-          "tests": [ "required" ] 
+          "tests": [ {"name":"required"} ] 
         }
       },
       "then": {
         "inner": {
           "lastName": {  
-            "tests": [ "required" ] 
+            "tests": [ {"name":"required"} ] 
           }
         }
       }
@@ -79,14 +83,24 @@ Allow object instead of arrays
   "inner": {
     "firstName": {
       "type": "string",
-      "tests": {
-        "required": true,
-        "oneOf": [1,2,{ "ref": "$someContext" }, { "message": "Should be the same as field {{refs.$someContext.label}}" }]
-      }
+      "tests": [
+        {
+          "name": "required"
+        },
+        {
+          "name": "oneOf",
+          "values": [1,2,{"ref":"$someContext"}],
+          "error": {
+            "message": "Should be the same as the other field"
+          }
+        }
+      ]
     }
   }
 }
 ```
+
+// refs can be functions?
 
 The ref values passed into the validator should be an a `refs` object when it comes to the messages
 
@@ -99,3 +113,59 @@ The ref values passed into the validator should be an a `refs` object when it co
 #### string
 #### boolean
 #### number
+
+// errors are thrown as an array
+// don't need to spend anytime massaging them
+// pass in a getErrorMessages(errors,{messages})
+//
+/*
+[
+  {
+    path:
+    errorType:
+    schemaType:
+    label: (from schema)
+    params: (to validator)
+    refs: (also passed in to validator)
+    message: (override)
+  }
+]
+
+// what can be overridden in the validator?
+// the name (errorType) or message, params and refs come from within
+
+
+*/
+
+
+I need nullable
+I need typeCheck
+I need default (which is just a later transform)
+tests don't get passed undefined/null
+
+
+[
+    // current
+    [ path, errors[] ]
+
+    // change it to, maybe, does it matter?
+    {
+        [path]: errors[]
+    }    
+]
+
+
+// The core creates the syntactical structure for you to do whatever it is that you frigging well want and is less than 3kb minzipped (just over 7kb minified)
+// if I could pass in a parser that would be nice, but it's probably also too complicated for right now
+// the only benefit I would get out of it is to extract the checkInner and reduceInner from the core
+{
+  type: mixed | string | object | array | number | boolean | date,
+  nullable:
+  inner: // object or array  
+  tests: [],
+  transforms: [],
+  conditions: [],
+
+}
+// It's bigger than react (how the hell did react get so small?)
+// The schemas are prebuilt things that you can use 

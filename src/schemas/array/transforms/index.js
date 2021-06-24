@@ -1,3 +1,4 @@
-export { default as arrayTransform } from './arrayTransform';
+export { default as base } from './base';
 export { default as unique } from './unique';
-export { default as compact } from './compact';
+export { default as only } from './only';
+export { default as except } from './except';

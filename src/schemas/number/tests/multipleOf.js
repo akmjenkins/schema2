@@ -1,2 +1,4 @@
-export default (num, error) => (v, _, passError) =>
-  v % num === 0 || passError(error);
+export default ({ value: v }) => (value, { createError, resolve }) => {
+  const resolved = { value: resolve(v) };
+  return value % resolved.value === 0 || createError({ resolved });
+};

@@ -1,11 +1,11 @@
-import { createTypeCheck, includeTransforms, isObject } from '../../utils';
-import * as objectTransforms from './transforms';
-const objectTypeCheck = createTypeCheck(isObject);
+import * as transforms from './transforms';
+import * as tests from './tests';
 
-export const schema = {
-  transforms: ['objectTransform'],
-  tests: ['objectTypeCheck'],
+export default {
+  tests,
+  transforms,
+  base: {
+    transforms: ['base'],
+    tests: ['typeCheck'],
+  },
 };
-
-export const tests = { objectTypeCheck };
-export const transforms = includeTransforms(objectTransforms, ['object']);

@@ -4,9 +4,17 @@ import { getErrorsAsync, getErrorsAtPath } from './fixtures';
 
 describe('mixed', () => {
   const schemas = { mixed };
-  const createSchema = (opts) => ({ type: 'mixed', ...opts });
+  const createSchema = (opts = {}) => ({ type: 'mixed', ...opts });
   it('should validate', async () => {
     await expect(validate({}, 'fred', { schemas })).resolves.toBe('fred');
+  });
+
+  it('should be not nullable', async () => {
+    const schema = createSchema();
+    const options = { schemas };
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, null, options));
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toEqual(expect.objectContaining({ type: 'notNullable' }));
   });
 
   it('should cast', async () => {

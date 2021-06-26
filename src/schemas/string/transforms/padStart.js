@@ -1,1 +1,2 @@
-export default (length, padder) => (v) => v.padStart(length, padder);
+export default ({ targetLength, padString }) => (v) =>
+  v.padEnd(targetLength, padString);

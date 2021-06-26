@@ -1,2 +1,1 @@
-export default (regexp, substitution) => (v) =>
-  v && v.replace(regexp, substitution);
+export default (regexp, substitution) => (v) => v.replace(regexp, substitution);

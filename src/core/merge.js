@@ -28,7 +28,6 @@ const mergeSchemaDefinitions = (...schemaDefs) =>
         ...rest
       } = {},
     ) => ({
-      type: 'mixed',
       ...acc,
       ...rest,
       inner:

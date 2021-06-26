@@ -1,5 +1,11 @@
-import * as transforms from './transforms';
-import * as tests from './tests';
+import { tests as mixedTests, transforms as mixedTransforms } from '../mixed';
+import * as theseTransforms from './transforms';
+import * as theseTests from './tests';
+
+const tests = { ...mixedTests, ...theseTests };
+const transforms = { ...mixedTransforms, ...theseTransforms };
+
+export { tests, transforms };
 
 export default {
   tests,

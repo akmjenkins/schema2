@@ -2,7 +2,7 @@ import { createGetOperator, isThenable, joinPath } from '../utils';
 import errorCreator from './errorCreator';
 
 export default (schema, value, options, resolve) => {
-  const { sync, multiple, path, is, schemas, abortEarly } = options;
+  const { sync, multiple, path, is, schemas } = options;
   const {
     tests,
     nullable,
@@ -25,7 +25,8 @@ export default (schema, value, options, resolve) => {
 
   const getOperator = createGetOperator(schemaType, 'tests', schemas);
 
-  // if we can abortEarly, and we get a synchronous error during validation, then don't waste cycle
+  // allows us to stop validation if multiple is false (default)
+  // not the same as abortEarly
   let shouldKeepRunning = true;
 
   return tests.reduce((acc, test) => {
@@ -49,7 +50,7 @@ export default (schema, value, options, resolve) => {
       resolve,
       is: (schema, value) => is(schema, value, { ...options, sync: true }),
       createError,
-      // allows a validator to run another test by name - i.e. negate
+      // allows a validator to run another test on this value by name - i.e. negate
       runTest: ({ type, ...args }) =>
         getOperator(type)(args)(value, testOptions),
     };
@@ -74,7 +75,7 @@ export default (schema, value, options, resolve) => {
 
     // we have a synchronous error, we can stop here if multiple is false and abortEarly is true
     // really thinking hard about getting rid of the multiple option
-    if (!multiple && abortEarly) shouldKeepRunning = false;
+    if (!multiple) shouldKeepRunning = false;
 
     return [...acc, returnResult(result)];
   }, []);

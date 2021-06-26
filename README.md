@@ -169,3 +169,20 @@ tests don't get passed undefined/null
 }
 // It's bigger than react (how the hell did react get so small?)
 // The schemas are prebuilt things that you can use 
+
+// To "inherit" from mixed you do this:
+
+import { tests as mixedTests, transforms as mixedTransforms } from 'schema2/schemas/mixed';
+
+const mySchema = {
+  tests: {
+    ...mixedTests,
+    ...myCustomTests,
+  },
+  transforms: {
+    ...mixedTransforms,
+    ...myCustomTransforms
+  }
+}
+
+export default mySchema;

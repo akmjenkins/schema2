@@ -8,7 +8,7 @@ export default ({ type, label, schema, params, error = {} }) => {
     ...supplied,
     params: {
       ...(supplied.params || {}),
-      // label schema and subject can NOT be overwritten in the error message...
+      // label schema and subject (subject is in params) can NOT be overwritten in the error message...
       label,
       schema: schema.type,
       ...params,

@@ -1,4 +1,4 @@
-export default ({ value: ref }) => (value, { resolve, createError }) => {
-  const resolved = { value: resolve({ ref }) };
-  return value !== resolved || createError({ params: { resolved } });
+export default ({ ref }) => (value, { resolve, createError }) => {
+  const resolved = { ref: resolve({ ref }) };
+  return value !== resolved.ref || createError({ params: { resolved } });
 };

@@ -29,12 +29,12 @@ export const createGetOperator = (schemaType, operatorType, schemas) => (
   type,
 ) => {
   try {
-    return (
-      schemas[schemaType][operatorType][type] ??
-      schemas['mixed'][operatorType][type]
-    );
+    return schemas[schemaType][operatorType][type];
   } catch {
     // prettier error
     throw new Error(`No ${operatorType} found with type ${type}`);
   }
 };
+
+export const canBailOut = ({ assert, abortEarly }, results) =>
+  assert && abortEarly && hasSynchronousError(results);

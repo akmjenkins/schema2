@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { validate, ValidationError } from '../src/index';
 
 export const getErrorsAsync = async (...args) => {

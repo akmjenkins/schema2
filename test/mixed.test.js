@@ -442,6 +442,37 @@ describe('mixed', () => {
 
     // validate async negate
   });
-  it('should validate combine', async () => {});
-  it('should validate serial', async () => {});
+
+  it('should validate combine', async () => {
+    const options = { schemas };
+    const type = 'combine';
+    const error = { type: 'notJoeOrFred' };
+    const tests = [
+      {
+        type: 'not',
+        value: 'joe',
+      },
+      {
+        type: 'not',
+        value: 'fred',
+      },
+    ];
+    const schema = createSchema({
+      tests: [{ type, tests, error }],
+    });
+    await expect(validate(schema, 'jim', options)).resolves.toBe('jim');
+
+    const errors = getErrorsAtPath(
+      await getErrorsAsync(schema, 'fred', options),
+    );
+    expect(errors).toContainEqual(
+      expect.objectContaining({
+        type: error.type,
+        params: expect.objectContaining({ subject: 'fred', tests }),
+      }),
+    );
+  });
+  it('should validate serial', async () => {
+    // this ones harder
+  });
 });

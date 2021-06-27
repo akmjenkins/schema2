@@ -1,9 +1,8 @@
-const isValidationError = () => true;
+const passed = (v) => v === true;
 
-const syncReducer = (then) => (acc, def) =>
-  isValidationError(acc) ? acc : then(def);
+const syncReducer = (then) => (acc, def) => (passed(acc) ? then(def) : acc);
 const asyncReducer = (then) => async (acc, def) =>
-  isValidationError(await acc) ? acc : then(def);
+  passed(await acc) ? then(def) : acc;
 
 // designed specifically as a proper "abortEarly" for async tests
 export default ({ tests }) => (_, { runTest, sync }) =>

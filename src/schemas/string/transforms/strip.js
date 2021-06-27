@@ -1,2 +1,2 @@
 import replace from './replace';
-export default () => replace(/\s/g, '');
+export default () => replace({ pattern: ' ', flags: 'g', substitution: '' });

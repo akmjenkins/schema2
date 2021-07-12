@@ -1,4 +1,4 @@
-import { nextOptions, joinPath, canBailOut } from '../utils';
+import { nextOptions, joinPath } from '../utils';
 import merge from './merge';
 import { createResolver } from './resolve';
 import resolveSchema from './resolveSchema';
@@ -37,14 +37,17 @@ const check = (schema, value, options) => {
     : [];
   const results = testResults.length ? [[joinPath(path), testResults]] : [];
 
-  // If there are any errors returned here and we have a synchronous error we can return early
-  if (canBailOut(options, results)) return { value, results };
+  // no custom parser provided by the schema definition (array/object), we're done
+  if (!parser) return { value, results };
 
   const nextChecker = (s, v, path) => check(s, v, nextOptions(options, path));
 
-  const { value: parsedValue = value, results: parsedResults = [] } = parser
-    ? parser(schema, value, options, nextChecker)
-    : {};
+  const { value: parsedValue = value, results: parsedResults = [] } = parser(
+    schema,
+    value,
+    options,
+    nextChecker,
+  );
 
   return { value: parsedValue, results: [...results, ...parsedResults] };
 };

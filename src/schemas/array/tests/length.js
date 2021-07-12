@@ -1,13 +1,12 @@
 import { filteredWithWhere } from '../utils';
 
-export default () => ({ value: v, where }) => (
-  value,
-  { resolve, is, createError },
-) => {
-  const resolved = { value: resolve(v) };
+export default () =>
+  ({ value: v, where }) =>
+  (value, { resolve, is, createError }) => {
+    const resolved = { value: resolve(v) };
 
-  return (
-    filteredWithWhere(value, where, { resolve, is }).length ===
-      resolved.value || createError({ resolved })
-  );
-};
+    return (
+      filteredWithWhere(value, where, { resolve, is }).length ===
+        resolved.value || createError({ resolved })
+    );
+  };

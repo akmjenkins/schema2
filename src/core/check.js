@@ -1,62 +1,9 @@
-import { nextOptions, hasOwnProp, joinPath, canBailOut } from '../utils';
+import { nextOptions, joinPath, canBailOut } from '../utils';
 import merge from './merge';
 import { createResolver } from './resolve';
 import resolveSchema from './resolveSchema';
 import runTransforms from './runTransforms';
 import runTests from './runTests';
-
-const reduceInner = (acc, key, { assert, abortEarly }, checker) => {
-  if (canBailOut({ assert, abortEarly }, acc.results)) return acc;
-
-  const { value, results } = checker();
-
-  const isArray = Array.isArray(acc.value);
-
-  // mimic yup behavior - only include the property if it has a value or it exists in the value being cast/validated
-  const shouldInclude = isArray || value || hasOwnProp(acc.value, key);
-
-  return {
-    value: isArray
-      ? [...acc.value, value]
-      : shouldInclude
-      ? { ...acc.value, [key]: value }
-      : acc.value,
-    results: [...acc.results, ...results],
-  };
-};
-
-// inner "check"ing of schemas
-const checkInner = (schema, value, options) => {
-  const { type, inner } = schema;
-
-  if (type === 'array') {
-    value = value || [];
-    const isTuple = Array.isArray(inner);
-    return (isTuple ? inner : value).reduce(
-      (acc, schemaOrRef, idx) =>
-        reduceInner(acc, idx, options, () =>
-          check(
-            isTuple ? schemaOrRef : inner,
-            value[idx],
-            nextOptions(options, idx),
-          ),
-        ),
-      { value: [], results: [] },
-    );
-  }
-
-  if (type === 'object') {
-    return Object.entries(inner).reduce(
-      (acc, [key, schemaOrRef]) =>
-        reduceInner(acc, key, options, () =>
-          check(schemaOrRef, acc.value[key], nextOptions(options, key)),
-        ),
-      { value: value || {}, results: [] },
-    );
-  }
-
-  return { value, results: [] };
-};
 
 // accepts a schema, value, and options
 // always returns the cast value and an array of test results like this { value, results }
@@ -69,7 +16,7 @@ const check = (schema, value, options) => {
 
   const thisResolver = resolver(path);
 
-  const { type, ref, inner } = schema;
+  const { type, ref, parser } = schema;
 
   // if we're checking a ref, just return the value
   if (ref) return thisResolver(schema);
@@ -93,11 +40,14 @@ const check = (schema, value, options) => {
   // If there are any errors returned here and we have a synchronous error we can return early
   if (canBailOut(options, results)) return { value, results };
 
-  const { value: innerValue = value, results: innerResults = [] } = inner
-    ? checkInner(schema, value, options)
+  const nextChecker = (s, v, path) => check(s, v, nextOptions(options, path));
+  const nextBailout = (results) => canBailOut(options, results);
+
+  const { value: parsedValue = value, results: parsedResults = [] } = parser
+    ? parser(schema, value, nextChecker, nextBailout)
     : {};
 
-  return { value: innerValue, results: [...results, ...innerResults] };
+  return { value: parsedValue, results: [...results, ...parsedResults] };
 };
 
 export default check;

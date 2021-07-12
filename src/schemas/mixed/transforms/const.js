@@ -1,1 +1,3 @@
-export default ({ value: v }) => (_, { resolve }) => resolve(v);
+export default ({ value: v }) =>
+  (_, { resolve }) =>
+    resolve(v);

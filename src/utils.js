@@ -25,16 +25,15 @@ export const parts = (path) =>
 export const get = (obj, path, def) =>
   parts(path).reduce((acc, part) => (!acc ? acc : acc[part]), obj) ?? def;
 
-export const createGetOperator = (schemaType, operatorType, schemas) => (
-  type,
-) => {
-  try {
-    return schemas[schemaType][operatorType][type];
-  } catch {
-    // prettier error
-    throw new Error(`No ${operatorType} found with type ${type}`);
-  }
-};
+export const createGetOperator =
+  (schemaType, operatorType, schemas) => (type) => {
+    try {
+      return schemas[schemaType][operatorType][type];
+    } catch {
+      // prettier error
+      throw new Error(`No ${operatorType} found with type ${type}`);
+    }
+  };
 
 export const canBailOut = ({ assert, abortEarly }, results) =>
   assert && abortEarly && hasSynchronousError(results);

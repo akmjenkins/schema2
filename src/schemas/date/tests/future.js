@@ -1,1 +1,4 @@
-export default ({ now }) => () => (value) => value > now();
+export default ({ now }) =>
+  () =>
+  (value) =>
+    value > now();

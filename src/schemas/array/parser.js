@@ -1,8 +1,9 @@
-export default ({ inner }, value = [], check, canBail) => {
+import { canBailOut } from '../../utils';
+export default ({ inner }, value = [], options, check) => {
   const isTuple = Array.isArray(inner);
   return (isTuple ? inner : value).reduce(
     (acc, schemaOrRef, idx) => {
-      if (canBail(acc.results)) return acc;
+      if (canBailOut(options, acc.results)) return acc;
       const { value, results } = check(
         isTuple ? schemaOrRef : inner,
         value[idx],

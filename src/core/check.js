@@ -41,10 +41,9 @@ const check = (schema, value, options) => {
   if (canBailOut(options, results)) return { value, results };
 
   const nextChecker = (s, v, path) => check(s, v, nextOptions(options, path));
-  const nextBailout = (results) => canBailOut(options, results);
 
   const { value: parsedValue = value, results: parsedResults = [] } = parser
-    ? parser(schema, value, nextChecker, nextBailout)
+    ? parser(schema, value, options, nextChecker)
     : {};
 
   return { value: parsedValue, results: [...results, ...parsedResults] };

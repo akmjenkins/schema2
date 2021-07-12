@@ -1,9 +1,9 @@
-import { hasOwnProp } from '../../utils';
+import { hasOwnProp, canBailOut } from '../../utils';
 
-export default ({ inner }, value, check, canBail) => {
+export default ({ inner }, value, options, check) => {
   return Object.entries(inner).reduce(
     (acc, [key, schemaOrRef]) => {
-      if (canBail(acc.results)) return acc;
+      if (canBailOut(options, acc.results)) return acc;
       const { value, results } = check(schemaOrRef, acc.value[key], key);
       return {
         value:

@@ -1,3 +1,6 @@
+export const isObject = (o) =>
+  Object.prototype.toString.call(o) === '[object Object]';
+
 export const nextOptions = (options, path) => ({
   ...options,
   path: nextPath(options, path),
@@ -30,10 +33,19 @@ export const createGetOperator =
     try {
       return schemas[schemaType][operatorType][type];
     } catch {
-      // prettier error
+      // human readable error
       throw new Error(`No ${operatorType} found with type ${type}`);
     }
   };
 
 export const canBailOut = ({ assert, abortEarly }, results) =>
   assert && abortEarly && hasSynchronousError(results);
+
+export const defined = (u) => u !== undefined;
+
+// export const convertOperators = (operators) =>
+//   Array.isArray(operators)
+//     ? operators
+//     : Object.entries(operators).reduce((acc, [type, value]) => {
+//         return [...acc, isObject(value) ? { type, ...value } : { type, value }];
+//       }, []);

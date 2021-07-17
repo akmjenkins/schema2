@@ -1,17 +1,10 @@
-import { tests as mixedTests, transforms as mixedTransforms } from '../mixed';
-import * as theseTransforms from './transforms';
-import * as theseTests from './tests';
+import mixed from '../mixed';
+import { extend } from '../utils';
+import * as transforms from './transforms';
+import * as tests from './tests';
 
-const tests = { ...mixedTests, ...theseTests };
-const transforms = { ...mixedTransforms, ...theseTransforms };
-
-export { tests, transforms };
-
-export default {
+export default extend(mixed, {
   tests,
   transforms,
-  base: {
-    transforms: [{ type: 'base' }],
-    tests: [{ type: 'typeCheck' }],
-  },
-};
+  base: { transforms: [{ type: 'base' }], tests: [{ type: 'typeCheck' }] },
+});

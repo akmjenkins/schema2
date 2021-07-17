@@ -8,6 +8,11 @@ import runTests from './runTests';
 // accepts a schema, value, and options
 // always returns the cast value and an array of test results like this { value, results }
 const check = (schema, value, options) => {
+  if (!schema)
+    throw new Error(
+      `A schema must contain a type of ref property ${options.path}`,
+    );
+
   const { schemas, path, assert, strict } = options;
 
   const resolver =

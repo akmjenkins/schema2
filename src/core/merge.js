@@ -1,18 +1,4 @@
-const mergeInnerSchemas = (how, ...inners) => {
-  // tuples can't be "merged" - the last one takes precedence
-  if (inners.some(Array.isArray)) return inners.filter(Array.isArray).pop();
-
-  // objects
-  return inners.reduce(
-    (acc, i = {}) =>
-      // merge the schema definitions at the keys
-      Object.entries(i).reduce(
-        (acc, [k, v]) => ({ ...acc, [k]: acc[k] ? how(acc[k], v) : v }),
-        acc,
-      ),
-    {},
-  );
-};
+const DEFAULT_MERGE = (schemas) => Object.assign({}, ...schemas);
 
 const mergeSchemaDefinitions = (...schemaDefs) =>
   schemaDefs.reduce(
@@ -24,16 +10,10 @@ const mergeSchemaDefinitions = (...schemaDefs) =>
         conditions = [],
         nullable,
         label,
-        inner,
         ...rest
       } = {},
     ) => ({
-      ...acc,
-      ...rest,
-      inner:
-        acc.inner || inner
-          ? mergeInnerSchemas(mergeSchemaDefinitions, acc.inner, inner)
-          : undefined,
+      ...(acc.merge || DEFAULT_MERGE)([acc, rest], mergeSchemaDefinitions),
       conditions: [...acc.conditions, ...conditions],
       transforms: [...acc.transforms, ...transforms],
       tests: [...acc.tests, ...tests],

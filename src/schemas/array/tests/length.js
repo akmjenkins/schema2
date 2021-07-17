@@ -3,10 +3,10 @@ import { filteredWithWhere } from '../utils';
 export default () =>
   ({ value: v, where }) =>
   (value, { resolve, is, createError }) => {
-    const resolved = { value: resolve(v) };
+    const resolved = { value: resolve(v), where: resolve(where) };
 
     return (
-      filteredWithWhere(value, where, { resolve, is }).length ===
-        resolved.value || createError({ resolved })
+      filteredWithWhere(value, resolved.where, { is }).length ===
+        resolved.value || createError({ params: { resolved } })
     );
   };

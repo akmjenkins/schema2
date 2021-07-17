@@ -1,4 +1,2 @@
-export const filteredWithWhere = (value, where, { resolve, is }) => {
-  const resolvedWhere = where ? resolve(where) : where;
-  return resolvedWhere ? value : value.filter((v) => is(resolvedWhere, v));
-};
+export const filteredWithWhere = (value, where, { is }) =>
+  where ? value : value.filter((v) => is(where, v));

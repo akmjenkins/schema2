@@ -29,11 +29,10 @@ export default (schema, value, options, resolve) => {
   // not the same as abortEarly
   let shouldKeepRunning = true;
 
-  return tests.reduce((acc, test) => {
-    if (!shouldKeepRunning) return acc;
+  // tests can be an array or an object
 
-    // error is a special keyword here - it can be a string or an object with params, message, type
-    const { type, error, ...args } = test;
+  return tests.reduce((acc, { type, error, ...args }) => {
+    if (!shouldKeepRunning) return acc;
 
     // bunch or warnings we have to go through
     // to let the developer know what they might have screwed up

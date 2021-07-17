@@ -20,7 +20,8 @@
   "homepage": "https://zuze-lab.github.io/schema2",
   "scripts": {
     "prepublishOnly": "yarn test && yarn build",
-    "build": "rimraf build && rollup -c",
+    "clean": "rimraf build",
+    "build": "yarn clean && rollup -c",
     "babel": "babel src -d build",
     "lint": "eslint src",
     "test:ci": "jest --coverage --coverageReporters=text-lcov | coveralls",

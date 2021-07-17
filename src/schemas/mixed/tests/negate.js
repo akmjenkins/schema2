@@ -1,11 +1,10 @@
 import { isThenable } from '../../../utils';
-
-const not = (name) => `not${name[0].toUpperCase()}${name.substr(1)}`;
+import { capitalize } from '../../utils';
 
 export default ({ test }) =>
   (_, { runTest, createError }) => {
     const done = (e) =>
-      e === true ? createError({ type: not(test.type) }) : true;
+      e !== true || createError({ type: `not${capitalize(test.type)}` });
     const result = runTest(test);
     return isThenable(result) ? result.then(done) : done(result);
   };

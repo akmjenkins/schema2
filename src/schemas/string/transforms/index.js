@@ -9,3 +9,4 @@ export { default as padEnd } from './padEnd';
 export { default as mask } from './mask';
 export { default as slice } from './slice';
 export { default as capitalize } from './capitalize';
+export { default as case } from './case';

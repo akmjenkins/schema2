@@ -4,7 +4,7 @@ import { validate, ValidationError } from '../src/index';
 export const getErrorsAsync = async (...args) => {
   try {
     await validate(...args);
-    throw new Error('No errors found');
+    return [];
   } catch (err) {
     if (err instanceof ValidationError) {
       return err.errors;

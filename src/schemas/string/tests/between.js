@@ -1,6 +1,6 @@
 import { makeParams } from '../../utils';
 
-export default ({ min, max, inclusive }) =>
+export default ({ min, max, inclusive = true }) =>
   (value, { resolve, createError }) => {
     const resolved = {
       min: resolve(min),

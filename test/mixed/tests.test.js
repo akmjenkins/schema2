@@ -22,6 +22,13 @@ describe('mixed - tests', () => {
     expect(errors[0]).toEqual(expect.objectContaining({ type: 'notNullable' }));
   });
 
+  it('should allow nullable', async () => {
+    const schema = createSchema({ nullable: true });
+    const options = createOptions();
+    const errors = await getErrorsAsync(schema, null, options);
+    expect(errors).toHaveLength(0);
+  });
+
   it('should validate is', async () => {
     const options = createOptions();
     const type = 'is';

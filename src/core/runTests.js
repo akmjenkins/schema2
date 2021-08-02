@@ -72,9 +72,8 @@ export default (schema, value, options, resolve) => {
       return [...acc, result.then(returnResult)];
     }
 
-    // we have a synchronous error, we can stop here if multiple is false and abortEarly is true
-    // really thinking hard about getting rid of the multiple option
-    if (!multiple) shouldKeepRunning = false;
+    // synchronous error - shouldKeepRunning is true is multiple is false OR the error is the typeCheck error
+    shouldKeepRunning = !multiple || type === 'typeCheck';
 
     return [...acc, returnResult(result)];
   }, []);

@@ -30,22 +30,12 @@ export const get = (obj, path, def) =>
 
 export const createGetOperator =
   (schemaType, operatorType, schemas) => (type) => {
-    try {
-      return schemas[schemaType][operatorType][type];
-    } catch {
-      // human readable error
-      throw new Error(`No ${operatorType} found with type ${type}`);
-    }
+    const op = schemas[schemaType][operatorType][type];
+    if (!op) throw new Error(`No ${operatorType} found with type ${type}`);
+    return op;
   };
 
 export const canBailOut = ({ assert, abortEarly }, results) =>
   assert && abortEarly && hasSynchronousError(results);
 
 export const defined = (u) => u !== undefined;
-
-// export const convertOperators = (operators) =>
-//   Array.isArray(operators)
-//     ? operators
-//     : Object.entries(operators).reduce((acc, [type, value]) => {
-//         return [...acc, isObject(value) ? { type, ...value } : { type, value }];
-//       }, []);

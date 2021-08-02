@@ -5,7 +5,6 @@ export default ({ schemas = {}, path = [], ...rest } = {}) => ({
   contextPrefix: '$', // how to reference context
   context: {}, // can be used in conditions/refs
   strict: false, // whether to run transforms
-  coerce: false,
   assert: true, // whether to validate
   schemas,
   path,

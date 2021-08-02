@@ -11,10 +11,10 @@ const CASES = {
       .join(''),
 };
 
-export default ({ type }) =>
-  (value) => {
-    const fn = CASES[type];
+export default ({ value: v }) =>
+  (value, { resolve }) => {
+    const fn = CASES[resolve(v)];
     if (!fn)
-      throw new Error('type must be one of pascal, kebab, snake, or camel');
+      throw new Error('value must be one of pascal, kebab, snake, or camel');
     return fn(value);
   };

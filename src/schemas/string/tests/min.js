@@ -1,7 +1,7 @@
 import { makeParams } from '../../utils';
-export default ({ value: v, inclusive }) =>
+export default ({ value: v, inclusive = true }) =>
   (value, { createError, resolve }) => {
-    const resolved = { value: resolve(v), inclusive };
+    const resolved = { value: resolve(v), inclusive: resolve(inclusive) };
     return (
       (inclusive
         ? value.length >= resolved.value

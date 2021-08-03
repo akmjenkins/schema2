@@ -1,6 +1,9 @@
 import { getTersity } from '../utils';
 
-export default () =>
+const tersity =
+  () =>
   ({ tersity }) =>
   (value) =>
     getTersity(value, tersity);
+
+export default tersity;

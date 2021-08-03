@@ -1,12 +1,15 @@
 import { getTersity, isValidDate } from '../utils';
+import { makeParams } from '../../utils';
 
-export default ({ parser }) =>
-  ({ min, max, inclusive, tersity }) =>
+const between =
+  ({ parser }) =>
+  ({ min, max, inclusive = true, tersity }) =>
   (value, { resolve, createError }) => {
     const resolved = {
       min: parser(resolve(min)),
       max: parser(resolve(max)),
-      inclusive,
+      inclusive: resolve(inclusive),
+      tersity: resolve(tersity),
     };
     if (!isValidDate(resolved.min))
       throw new Error(
@@ -19,13 +22,16 @@ export default ({ parser }) =>
       );
     }
 
-    const lowT = getTersity(resolved.low, tersity);
-    const highT = getTersity(resolved.high, tersity);
-    const valueT = getTersity(value, tersity);
+    const lowT = getTersity(resolved.low, resolved.tersity);
+    const highT = getTersity(resolved.high, resolved.tersity);
+    const valueT = getTersity(value, resolved.tersity);
 
     return (
-      (inclusive
+      (resolved.inclusive
         ? valueT <= highT && valueT >= lowT
-        : valueT < highT && valueT > lowT) || createError({ resolved })
+        : valueT < highT && valueT > lowT) ||
+      createError(makeParams({ resolved }))
     );
   };
+
+export default between;

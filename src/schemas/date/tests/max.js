@@ -1,17 +1,27 @@
 import { isValidDate, getTersity } from '../utils';
+import { makeParams } from '../../utils';
 
-export default ({ parser }) =>
-  ({ value: v, inclusive, tersity }) =>
+const max =
+  ({ parser }) =>
+  ({ value: v, inclusive = true, tersity }) =>
   (value, { resolve, createError }) => {
-    const params = { value: v, tersity, inclusive };
-    const reference = parser(resolve(v));
+    const resolved = {
+      value: resolve(v),
+      tersity: resolve(tersity),
+      inclusive: resolve(inclusive),
+    };
+    const reference = parser(resolved.value);
     if (!isValidDate(reference))
       throw new Error(
         `Could not convert ${v} to a valid v for comparison purposes`,
       );
 
-    const a = getTersity(value, tersity);
-    const b = getTersity(reference, tersity);
+    const a = getTersity(value, resolved.tersity);
+    const b = getTersity(reference, resolved.tersity);
 
-    return inclusive ? a <= b : a < b || createError(params);
+    return resolved.inclusive
+      ? a <= b
+      : a > b || createError(makeParams({ resolved }));
   };
+
+export default max;

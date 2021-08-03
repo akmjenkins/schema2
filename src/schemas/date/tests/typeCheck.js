@@ -1,3 +1,4 @@
 import { isValidDate } from '../utils';
 
-export default () => (val) => isValidDate(val);
+const typeCheck = () => () => isValidDate;
+export default typeCheck;

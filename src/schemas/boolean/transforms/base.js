@@ -1,5 +1,8 @@
+const TRUE = /^(true|1)$/i;
+const FALSE = /^(false|0)$/i;
+
 export default () => (value) => {
-  if (/^(true|1)$/i.test(value)) return true;
-  if (/^(false|0)$/i.test(value)) return false;
+  if (TRUE.test(value)) return true;
+  if (FALSE.test(value)) return false;
   return value;
 };

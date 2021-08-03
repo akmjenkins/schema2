@@ -1,8 +1,9 @@
+import { makeParams } from '../../utils';
 export default ({ schema }) =>
   (value, { is, resolve, createError }) => {
-    const s = resolve(schema);
+    const resolved = { schema: resolve(schema) };
     return (
-      Object.keys(value).every((v) => is(schema, v)) ||
-      createError({ params: { resolved: { schema: s } } })
+      Object.keys(value).every((v) => is(resolved.schema, v)) ||
+      createError(makeParams({ resolved }))
     );
   };

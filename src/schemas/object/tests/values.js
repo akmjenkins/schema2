@@ -1,12 +1,12 @@
+import { makeParams } from '../../utils';
 export default ({ schema, where }) =>
   (value, { is, resolve, createError }) => {
-    const s = resolve(schema);
-    const w = resolve(where);
+    const resolved = { schema: resolve(schema), where: resolve(where) };
 
     return (
       Object.entries(value)
-        .filter(([key]) => !w || is(w, key))
-        .every(([, v]) => is(s, v)) ||
-      createError({ params: { resolved: { schema: s, where: w } } })
+        .filter(([key]) => !resolved.where || is(resolved.where, key))
+        .every(([, v]) => is(resolved.schema, v)) ||
+      createError(makeParams({ resolved }))
     );
   };

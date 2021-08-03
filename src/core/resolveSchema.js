@@ -7,23 +7,19 @@ const resolveCondition = ({ when, then, otherwise }, resolver, options) => {
   const { is } = options;
   // conditions must always be an array
   const whens = Array.isArray(when) ? when : [when];
+  const opts = {
+    ...options,
+    // right now conditions can only be run synchronously
+    sync: true,
+    assert: true,
+    abortEarly: true,
+    multiple: false,
+  };
 
   return (
     whens.some((inner) =>
-      is(
-        { type: 'object', inner },
-        Object.keys(inner).reduce(
-          (acc, ref) => ({ ...acc, [ref]: resolver({ ref }) }),
-          {},
-        ),
-        {
-          ...options,
-          // right now conditions can only be run synchronously
-          sync: true,
-          assert: true,
-          abortEarly: true,
-          multiple: false,
-        },
+      Object.entries(inner).every(([ref, schema]) =>
+        is(schema, resolver({ ref }), opts),
       )
         ? then
         : otherwise,

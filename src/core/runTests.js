@@ -7,6 +7,7 @@ export default (schema, value, options, resolve) => {
     tests,
     nullable,
     type: schemaType,
+    typeError,
     label = joinPath(path) || 'field',
   } = schema;
 
@@ -20,7 +21,7 @@ export default (schema, value, options, resolve) => {
             label,
             schema,
             params: { subject: value },
-          })(),
+          }),
         ];
 
   const getOperator = createGetOperator(schemaType, 'tests', schemas);
@@ -59,7 +60,8 @@ export default (schema, value, options, resolve) => {
     // test passed
     if (result === true) return acc;
 
-    const returnResult = (r) => r || createError();
+    const returnResult = (r) =>
+      r || createError(type === 'typeCheck' ? typeError : undefined);
 
     // if the result is a promise
     if (isThenable(result)) {

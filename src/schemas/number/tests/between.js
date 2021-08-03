@@ -1,6 +1,10 @@
-export default ({ min, max, inclusive }) =>
+export default ({ min, max, inclusive = true }) =>
   (value, { resolve, createError }) => {
-    const resolved = { min: resolve(min), max: resolve(max), inclusive };
+    const resolved = {
+      min: resolve(min),
+      max: resolve(max),
+      inclusive: resolve(inclusive),
+    };
 
     return (
       (inclusive

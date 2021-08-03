@@ -1,9 +1,9 @@
 export default ({ value: v, inclusive }) =>
   (value, { resolve, createError }) => {
-    const resolved = { value: resolve(v), inclusive };
+    const resolved = { value: resolve(v), inclusive: resolve(inclusive) };
 
     return (
-      (inclusive ? value >= resolved.value : value > resolved.value) ||
+      (resolved.inclusive ? value >= resolved.value : value > resolved.value) ||
       createError({ resolved })
     );
   };

@@ -3,7 +3,7 @@ export default ({ value: v, inclusive = true }) =>
     const resolved = { value: resolve(v), inclusive: resolve(inclusive) };
 
     return (
-      (inclusive ? value <= resolved.value : value < resolved.value) ||
+      (resolved.inclusive ? value <= resolved.value : value < resolved.value) ||
       createError({ resolved })
     );
   };

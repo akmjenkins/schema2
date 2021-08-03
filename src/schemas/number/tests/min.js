@@ -1,4 +1,4 @@
-export default ({ value: v, inclusive }) =>
+export default ({ value: v, inclusive = true }) =>
   (value, { resolve, createError }) => {
     const resolved = { value: resolve(v), inclusive: resolve(inclusive) };
 

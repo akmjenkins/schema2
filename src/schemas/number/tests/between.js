@@ -7,7 +7,7 @@ export default ({ min, max, inclusive = true }) =>
     };
 
     return (
-      (inclusive
+      (resolved.inclusive
         ? value <= resolved.max && value >= resolved.min
         : value < resolved.max && value > resolved.min) ||
       createError({ resolved })

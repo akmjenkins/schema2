@@ -1,2 +1,1 @@
-export default () => (val) =>
-  val instanceof Boolean || typeof val === 'boolean';
+export default () => (val) => typeof val === 'boolean';

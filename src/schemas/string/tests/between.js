@@ -11,7 +11,8 @@ export default ({ min, max, inclusive = true }) =>
     const { max: high, min: low } = resolved;
 
     return (
-      (inclusive ? len <= high && len >= low : len < high && len > low) ||
-      createError(makeParams({ resolved }))
+      (resolved.inclusive
+        ? len <= high && len >= low
+        : len < high && len > low) || createError(makeParams({ resolved }))
     );
   };

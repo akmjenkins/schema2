@@ -21,7 +21,7 @@ export default (schema, value, options, resolve) => {
             label,
             schema,
             params: { subject: value },
-          }),
+          })(),
         ];
 
   const getOperator = createGetOperator(schemaType, 'tests', schemas);

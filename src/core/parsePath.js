@@ -36,5 +36,6 @@ export default (path, currentPath) => {
   const value = currentPath.slice(0, -(levels + 1)).concat(parts(path));
 
   // returns the value and the schema
+  // note we've hardcoded "inner" in here, not sure if we can get rid of it
   return [value, value.reduce((acc, p) => [...acc, 'inner', p], [])];
 };

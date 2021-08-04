@@ -1,12 +1,7 @@
 import { Date as SDate } from 'sugar-date';
 import createDateSchema from '../../src/schemas/date';
 import { cast } from '../../src';
-import {
-  getErrorsAsync,
-  getErrorsAtPath,
-  createSchemaCreator,
-  createOptionsCreator,
-} from '../fixtures';
+import { createSchemaCreator, createOptionsCreator } from '../fixtures';
 
 describe('date - tests', () => {
   const createSchema = createSchemaCreator('date');

@@ -5,8 +5,9 @@ import { createSchemaCreator, createOptionsCreator } from '../fixtures';
 describe('string - transforms', () => {
   const createSchema = createSchemaCreator('string');
   const createOptions = createOptionsCreator({ string });
-  it('should validate', async () => {
-    await expect(validate({}, 'fred', createOptions())).resolves.toBe('fred');
+  it('should base cast', () => {
+    expect(cast(createSchema(), 0, createOptions())).toBe('0');
+    expect(cast(createSchema(), {}, createOptions())).toEqual(null);
   });
 
   it('should cast using mask', async () => {
@@ -168,5 +169,88 @@ describe('string - transforms', () => {
         createOptions(),
       ),
     ).toBe('0000000joe');
+  });
+
+  it('should replace', () => {
+    const type = 'replace';
+    expect(
+      cast(
+        createSchema({
+          transforms: [{ type, pattern: '[aeiou]', flags: 'g' }],
+        }),
+        'joe',
+        createOptions(),
+      ),
+    ).toBe('j');
+
+    expect(
+      cast(
+        createSchema({
+          transforms: [
+            { type, pattern: '[aeiou]', flags: 'g', substitution: 'm' },
+          ],
+        }),
+        'joe',
+        createOptions(),
+      ),
+    ).toBe('jmm');
+  });
+
+  it('should slice', () => {
+    const type = 'slice';
+    expect(
+      cast(
+        createSchema({ transforms: [{ type, start: 1 }] }),
+        'joe',
+        createOptions(),
+      ),
+    ).toBe('oe');
+
+    expect(
+      cast(
+        createSchema({ transforms: [{ type, end: 1 }] }),
+        'joe',
+        createOptions(),
+      ),
+    ).toBe('j');
+  });
+
+  it('should trim', () => {
+    const type = 'trim';
+
+    expect(
+      cast(
+        createSchema({ transforms: [{ type }] }),
+        ' string ',
+        createOptions(),
+      ),
+    ).toBe('string');
+
+    expect(
+      cast(
+        createSchema({ transforms: [{ type, start: false }] }),
+        ' string ',
+        createOptions(),
+      ),
+    ).toBe(' string');
+
+    expect(
+      cast(
+        createSchema({ transforms: [{ type, end: false }] }),
+        ' string ',
+        createOptions(),
+      ),
+    ).toBe('string ');
+  });
+
+  it('should strip', () => {
+    const type = 'strip';
+    expect(
+      cast(
+        createSchema({ transforms: [{ type }] }),
+        ' this is a long string ',
+        createOptions(),
+      ),
+    ).toBe('thisisalongstring');
   });
 });

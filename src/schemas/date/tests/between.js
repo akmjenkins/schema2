@@ -16,20 +16,20 @@ const between =
         `Could not convert ${min} to a valid date for comparison purposes`,
       );
 
-    if (!isValidDate(resolved.high)) {
+    if (!isValidDate(resolved.max)) {
       throw new Error(
         `Could not convert ${max} to a valid date for comparison purposes`,
       );
     }
 
-    const lowT = getTersity(resolved.low, resolved.tersity);
-    const highT = getTersity(resolved.high, resolved.tersity);
+    const minT = getTersity(resolved.min, resolved.tersity);
+    const maxT = getTersity(resolved.max, resolved.tersity);
     const valueT = getTersity(value, resolved.tersity);
 
     return (
       (resolved.inclusive
-        ? valueT <= highT && valueT >= lowT
-        : valueT < highT && valueT > lowT) ||
+        ? valueT <= maxT && valueT >= minT
+        : valueT < maxT && valueT > minT) ||
       createError(makeParams({ resolved }))
     );
   };

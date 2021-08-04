@@ -1,6 +1,7 @@
 export default ({ pattern = '.', character = '*', unmasked, start = true }) =>
-  (value) => {
-    const r = RegExp(pattern);
+  (value, { resolve }) => {
+    const r = RegExp(resolve(pattern));
+    const char = resolve(character);
     const mask = (i) => {
       if (!unmasked) return true;
       return start ? i < value.length - unmasked : i >= unmasked;
@@ -9,7 +10,7 @@ export default ({ pattern = '.', character = '*', unmasked, start = true }) =>
       .split('')
       .map((c, i) => {
         if (!r.test(c)) return c;
-        return mask(i) ? character : c;
+        return mask(i) ? char : c;
       })
       .join('');
   };

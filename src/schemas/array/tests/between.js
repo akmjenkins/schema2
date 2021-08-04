@@ -1,4 +1,6 @@
 import { filteredWithWhere } from '../utils';
+import { makeParams } from '../../utils';
+
 export default ({ min, max, inclusive }) =>
   (value, { resolve, createError, is }) => {
     const resolved = {
@@ -13,6 +15,6 @@ export default ({ min, max, inclusive }) =>
       (inclusive
         ? len <= resolved.max && len >= resolved.min
         : len < resolved.max && len > resolved.min) ||
-      createError({ params: { resolved } })
+      createError(makeParams({ resolved }))
     );
   };

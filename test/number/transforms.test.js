@@ -7,6 +7,8 @@ describe('number - transforms', () => {
   const createOptions = createOptionsCreator({ number });
   it('should base cast', () => {
     expect(cast(createSchema(), '9', createOptions())).toBe(9);
+    expect(cast(createSchema(), '', createOptions())).toBeNaN();
+    expect(cast(createSchema(), 'fred', createOptions())).toBeNaN();
   });
 
   it('should cast absolute', () => {

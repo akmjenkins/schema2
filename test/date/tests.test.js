@@ -9,9 +9,10 @@ import {
 } from '../fixtures';
 
 describe('date - tests', () => {
+  const parser = (date) => SDate.create(date, { fromUTC: true });
   const createSchema = createSchemaCreator('date');
   const createOptions = createOptionsCreator({
-    date: createDateSchema({ parser: SDate.create }),
+    date: createDateSchema({ parser }),
   });
 
   it('should validate typeError', async () => {
@@ -40,7 +41,7 @@ describe('date - tests', () => {
     );
 
     await expect(validate(schema, 'yesterday', options)).resolves.toEqual(
-      SDate.create('yesterday'),
+      parser('yesterday'),
     );
   });
 
@@ -54,7 +55,7 @@ describe('date - tests', () => {
     );
 
     await expect(validate(schema, 'tomorrow', options)).resolves.toEqual(
-      SDate.create('tomorrow'),
+      parser('tomorrow'),
     );
   });
 
@@ -68,9 +69,7 @@ describe('date - tests', () => {
     );
 
     const str = 'last Tuesday';
-    await expect(validate(schema, str, options)).resolves.toEqual(
-      SDate.create(str),
-    );
+    await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
   });
 
   it('should validate min', async () => {
@@ -83,8 +82,21 @@ describe('date - tests', () => {
     );
 
     const str = 'next Tuesday';
-    await expect(validate(schema, str, options)).resolves.toEqual(
-      SDate.create(str),
+    await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
+  });
+
+  it('should validate between', async () => {
+    const type = 'between';
+    const schema = createSchema({
+      tests: [{ type, min: '1 hour ago', max: 'now' }],
+    });
+    const options = createOptions();
+    const errors = await getErrorsAsync(schema, 'yesterday', options);
+    expect(getErrorsAtPath(errors)[0]).toEqual(
+      expect.objectContaining({ type }),
     );
+
+    const str = '30 minutes ago';
+    await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
   });
 });

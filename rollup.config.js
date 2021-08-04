@@ -32,6 +32,15 @@ export default [
     },
     ...COMMON,
   },
+  // full package
+  {
+    input: 'src/full.js',
+    output: {
+      file: 'build/full.js',
+      format: 'cjs',
+    },
+    ...COMMON,
+  },
   schema('mixed'),
   schema('boolean'),
   schema('number'),

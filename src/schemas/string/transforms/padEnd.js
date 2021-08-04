@@ -1,3 +1,3 @@
 export default ({ targetLength, padString }) =>
-  (v) =>
-    v.padEnd(targetLength, padString);
+  (v, { resolve }) =>
+    v.padEnd(resolve(targetLength), resolve(padString));

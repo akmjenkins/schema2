@@ -5,7 +5,6 @@ export default (schema, value, options, resolve) => {
   const { type: schemaType, transforms } = schema;
 
   const transformOptions = {
-    original: value,
     resolve,
     is: (schema, value) => is(schema, value, { ...options, sync: true }),
   };

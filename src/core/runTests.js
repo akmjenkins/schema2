@@ -55,28 +55,33 @@ export default (schema, value, options, resolve) => {
         getOperator(type)(args)(value, testOptions),
     };
 
-    const result = getOperator(type)(args)(value, testOptions);
+    try {
+      const result = getOperator(type)(args)(value, testOptions);
 
-    // test passed
-    if (result === true) return acc;
+      // test passed
+      if (result === true) return acc;
 
-    const returnResult = (r) =>
-      r || createError(type === 'typeCheck' ? typeError : undefined);
+      const returnResult = (r) =>
+        r || createError(type === 'typeCheck' ? typeError : undefined);
 
-    // if the result is a promise
-    if (isThenable(result)) {
-      // and we are running in synchronous mode throw an error
-      if (sync)
-        throw new Error(
-          `Synchronous validation included an async test ${type} at ${label}`,
-        );
+      // if the result is a promise
+      if (isThenable(result)) {
+        // and we are running in synchronous mode throw an error
+        if (sync)
+          throw new Error(
+            `Synchronous validation included an async test ${type} at ${label}`,
+          );
 
-      return [...acc, result.then(returnResult)];
+        return [...acc, result.then(returnResult)];
+      }
+
+      // synchronous error - shouldKeepRunning is true is multiple is false OR the error is the typeCheck error
+      shouldKeepRunning = !multiple || type === 'typeCheck';
+
+      return [...acc, returnResult(result)];
+    } catch (err) {
+      if (sync) throw err;
+      return [...acc, Promise.reject(err)];
     }
-
-    // synchronous error - shouldKeepRunning is true is multiple is false OR the error is the typeCheck error
-    shouldKeepRunning = !multiple || type === 'typeCheck';
-
-    return [...acc, returnResult(result)];
   }, []);
 };

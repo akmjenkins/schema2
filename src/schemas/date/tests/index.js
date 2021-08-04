@@ -7,9 +7,6 @@ import typeCheck from './typeCheck';
 
 export default (...args) =>
   [min, max, future, past, typeCheck, between].reduce(
-    (acc, f) => ({
-      ...acc,
-      [f.name]: f(...args),
-    }),
+    (acc, f) => ({ ...acc, [f.name]: f(...args) }),
     {},
   );

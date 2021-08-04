@@ -70,6 +70,10 @@ describe('date - tests', () => {
 
     const str = 'last Tuesday';
     await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
+    const badSchema = createSchema({ tests: [{ type, value: 'flarfen' }] });
+    await expect(validate(badSchema, str, options)).rejects.toThrow(
+      'Could not convert flarfen (resolved: flarfen) to a valid date for comparison purposes',
+    );
   });
 
   it('should validate min', async () => {
@@ -83,6 +87,11 @@ describe('date - tests', () => {
 
     const str = 'next Tuesday';
     await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
+
+    const badSchema = createSchema({ tests: [{ type, value: 'flarfen' }] });
+    await expect(validate(badSchema, str, options)).rejects.toThrow(
+      'Could not convert flarfen (resolved: flarfen) to a valid date for comparison purposes',
+    );
   });
 
   it('should validate between', async () => {

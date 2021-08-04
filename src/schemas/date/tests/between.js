@@ -6,24 +6,26 @@ const between =
   ({ min, max, inclusive = true, tersity }) =>
   (value, { resolve, createError }) => {
     const resolved = {
-      min: parser(resolve(min)),
-      max: parser(resolve(max)),
+      min: resolve(min),
+      max: resolve(max),
       inclusive: resolve(inclusive),
       tersity: resolve(tersity),
     };
-    if (!isValidDate(resolved.min))
+    const minP = parser(resolved.min);
+    const maxP = parser(resolved.max);
+    if (!isValidDate(minP))
       throw new Error(
-        `Could not convert ${min} to a valid date for comparison purposes`,
+        `Could not convert ${min} (resolved: ${resolved.min}) to a valid date for comparison purposes`,
       );
 
-    if (!isValidDate(resolved.max)) {
+    if (!isValidDate(maxP)) {
       throw new Error(
-        `Could not convert ${max} to a valid date for comparison purposes`,
+        `Could not convert ${max} (resolved: ${resolved.max}) to a valid date for comparison purposes`,
       );
     }
 
-    const minT = getTersity(resolved.min, resolved.tersity);
-    const maxT = getTersity(resolved.max, resolved.tersity);
+    const minT = getTersity(minP, resolved.tersity);
+    const maxT = getTersity(maxP, resolved.tersity);
     const valueT = getTersity(value, resolved.tersity);
 
     return (

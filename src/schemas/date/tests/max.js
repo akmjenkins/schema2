@@ -13,7 +13,7 @@ const max =
     const reference = parser(resolved.value);
     if (!isValidDate(reference))
       throw new Error(
-        `Could not convert ${v} to a valid v for comparison purposes`,
+        `Could not convert ${v} (resolved: ${resolved.value}) to a valid date for comparison purposes`,
       );
 
     const a = getTersity(value, resolved.tersity);
@@ -21,7 +21,7 @@ const max =
 
     return resolved.inclusive
       ? a <= b
-      : a > b || createError(makeParams({ resolved }));
+      : a < b || createError(makeParams({ resolved }));
   };
 
 export default max;

@@ -1,20 +1,19 @@
 import { filteredWithWhere } from '../utils';
-import { makeParams } from '../../utils';
 
-export default ({ min, max, inclusive }) =>
-  (value, { resolve, createError, is }) => {
-    const resolved = {
-      min: resolve(min),
-      max: resolve(max),
-      inclusive: resolve(inclusive),
-    };
-
-    const len = filteredWithWhere(value, resolved.where, { is }).length;
-
-    return (
-      (inclusive
-        ? len <= resolved.max && len >= resolved.min
-        : len < resolved.max && len > resolved.min) ||
-      createError(makeParams({ resolved }))
+export default () =>
+  ({ min, max, values, where, path, inclusive = true }) =>
+  (value, { resolve, is, createError }) => {
+    const { resolved, subject } = filteredWithWhere(
+      { values, where, path },
+      { is, resolve },
+      value,
     );
+
+    resolved.min = resolve(min);
+    resolved.max = resolve(max);
+    resolved.inclusive = resolve(inclusive);
+    return resolved.inclusive
+      ? subject.length >= min.value && subject.length <= max.value
+      : (subject.length > min.value && subject.length < max.value) ||
+          createError({ resolved });
   };

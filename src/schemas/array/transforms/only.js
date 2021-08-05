@@ -1,3 +1,4 @@
-export default ({ values, where }) =>
-  (value, { is }) =>
-    value.filter((v) => (where ? is(where, v) : values.includes(v)));
+import { filteredWithWhere } from '../utils';
+export default ({ values, where, path }) =>
+  (value, { is, resolve }) =>
+    filteredWithWhere({ values, where, path }, { is, resolve }, value).subject;

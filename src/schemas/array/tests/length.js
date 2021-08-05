@@ -1,12 +1,15 @@
 import { filteredWithWhere } from '../utils';
 
 export default () =>
-  ({ value: v, where }) =>
+  ({ value: v, values, where, path }) =>
   (value, { resolve, is, createError }) => {
-    const resolved = { value: resolve(v), where: resolve(where) };
-
-    return (
-      filteredWithWhere(value, resolved.where, { is }).length ===
-        resolved.value || createError({ params: { resolved } })
+    const { resolved, subject } = filteredWithWhere(
+      { values, where, path },
+      { is, resolve },
+      value,
+      true,
     );
+
+    resolved.value = resolve(v);
+    return subject.length === resolved.value || createError({ resolved });
   };

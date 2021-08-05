@@ -5,9 +5,12 @@ const MULTIPLIERS = {
   desc: -1,
 };
 
+const NUMERIC = 'numeric';
+const ALPHA = 'alpha';
+
 const METHODS = {
-  alpha: (a, b) => a.localeCompare(b),
-  numeric: (a, b) => a - b,
+  [ALPHA]: (a, b) => a.localeCompare(b),
+  [NUMERIC]: (a, b) => a - b,
 };
 
 export default ({ path, dir = 'asc', method }) =>
@@ -20,7 +23,7 @@ export default ({ path, dir = 'asc', method }) =>
     const getter = (from) => (resolved.path ? get(from, resolved.path) : from);
     if (!resolved.method)
       resolved.method =
-        typeof (getter(value[0]) ?? 1) === 'number' ? 'numeric' : 'alpha';
+        typeof (getter(value[0]) ?? 1) === 'number' ? NUMERIC : ALPHA;
 
     const multiplier = MULTIPLIERS[resolved.dir];
     if (!multiplier)
@@ -29,7 +32,7 @@ export default ({ path, dir = 'asc', method }) =>
       );
 
     const fn = METHODS[resolved.method];
-    if (!fn) throw new Error('method must be one of alpha or numeric');
+    if (!fn) throw new Error(`method must be one of ${ALPHA} or ${NUMERIC}`);
 
-    return value.sort((a, b) => fn(getter(a), getter(b)) * multiplier);
+    return [...value].sort((a, b) => fn(getter(a), getter(b)) * multiplier);
   };

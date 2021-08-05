@@ -1,19 +1,19 @@
 import { filteredWithWhere } from '../utils';
 
 export default () =>
-  ({ value: v, where, inclusive }) =>
+  ({ value: v, values, where, path, inclusive = true }) =>
   (value, { resolve, is, createError }) => {
-    const resolved = {
-      value: resolve(v),
-      where: resolve(where),
-      inclusive: resolve(inclusive),
-    };
-    const matched = filteredWithWhere(value, resolved.where, { is });
+    const { resolved, subject } = filteredWithWhere(
+      { values, where, path },
+      { is, resolve },
+      value,
+    );
 
+    resolved.value = resolve(v);
+    resolved.inclusive = resolve(inclusive);
     return (
       (resolved.inclusive
-        ? matched.length >= resolved.value
-        : matched.length > resolved.value) ||
-      createError({ params: { resolved } })
+        ? subject.length >= resolved.value
+        : subject.length > resolved.value) || createError({ resolved })
     );
   };

@@ -3,8 +3,11 @@ export default () => (val) => {
     try {
       val = JSON.parse(val);
     } catch (err) {
-      val = null;
+      // skip
     }
 
-  return Array.isArray(val) ? val : null;
+  if (Array.isArray(val)) return val;
+  throw new Error(
+    `The value '${val}' could not be cast to a value that satisfies the array schema`,
+  );
 };

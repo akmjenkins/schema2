@@ -1,3 +1,4 @@
+import * as yup from 'yup';
 import array from '../../src/schemas/array';
 import mixed from '../../src/schemas/mixed';
 import { cast } from '../../src';
@@ -10,9 +11,9 @@ describe('array - transforms', () => {
   it('should base transform', () => {
     const schema = createSchema();
     const options = createOptions();
-    expect(cast(schema, '', options)).toBeNull();
+    expect(() => cast(schema, '', options)).toThrowError();
     expect(cast(schema, '[]', options)).toEqual([]);
-    expect(cast(schema, {}, options)).toBeNull();
+    expect(() => cast(schema, {}, options)).toThrowError();
   });
 
   it('should unique transform', () => {

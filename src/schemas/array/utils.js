@@ -1,5 +1,7 @@
 import { get } from '../../utils';
 
+const getter = (path, v) => (path ? get(v, path) : v);
+
 export const filteredWithWhere = (
   { values, where, path },
   { is, resolve },
@@ -12,16 +14,11 @@ export const filteredWithWhere = (
     w: resolve(where),
   };
 
-  const getter = (v) => (resolved.path ? get(v, resolved.path) : v);
-
   const checker = (v) => {
-    const _v = getter(v);
+    const _v = getter(resolved.path, v);
     const ret = resolved.w ? is(resolved.w, _v) : resolved.vs.includes(_v);
     return negate ? !ret : ret;
   };
 
-  return {
-    subject: value.filter(checker),
-    resolved,
-  };
+  return { subject: value.filter(checker), resolved };
 };

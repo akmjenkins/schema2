@@ -34,17 +34,19 @@ const check = (schema, value, options) => {
   if (fork !== schema) return check(fork, value, options);
 
   // run the transforms to get the final value if strict is false
+  let typeError;
   if (!strict) {
     try {
       value = runTransforms(schema, value, options, thisResolver);
     } catch (err) {
       if (!assert) throw err;
+      typeError = err;
     }
   }
 
   // assert only if necessary
   const testResults = assert
-    ? runTests(schema, value, options, thisResolver)
+    ? runTests(schema, value, options, thisResolver, typeError)
     : [];
   const results = testResults.length ? [[joinPath(path), testResults]] : [];
 

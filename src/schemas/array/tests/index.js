@@ -1,4 +1,3 @@
-export { default as typeCheck } from './typeCheck';
 export { default as max } from './max';
 export { default as min } from './min';
 export { default as between } from './between';

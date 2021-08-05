@@ -3,10 +3,9 @@ import max from './max';
 import future from './future';
 import past from './past';
 import between from './between';
-import typeCheck from './typeCheck';
 
 export default (...args) =>
-  [min, max, future, past, typeCheck, between].reduce(
+  [min, max, future, past, between].reduce(
     (acc, f) => ({ ...acc, [f.name]: f(...args) }),
     {},
   );

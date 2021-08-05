@@ -1,7 +1,7 @@
 import { createGetOperator, isThenable, joinPath } from '../utils';
 import errorCreator from './errorCreator';
 
-export default (schema, value, options, resolve) => {
+export default (schema, value, options, resolve, castError) => {
   const { sync, multiple, path, is, schemas } = options;
   const {
     tests,
@@ -10,6 +10,17 @@ export default (schema, value, options, resolve) => {
     typeError,
     label = joinPath(path) || 'field',
   } = schema;
+
+  // if there's a castError we're done
+  if (castError)
+    return [
+      errorCreator({
+        type: 'typeCheck',
+        label,
+        schema,
+        params: { subject: value },
+      })(typeError),
+    ];
 
   // null/undefined values are special cases and will not be run through tests
   if (value === null || value === undefined)
@@ -61,8 +72,7 @@ export default (schema, value, options, resolve) => {
       // test passed
       if (result === true) return acc;
 
-      const returnResult = (r) =>
-        r || createError(type === 'typeCheck' ? typeError : undefined);
+      const returnResult = (r) => r || createError();
 
       // if the result is a promise
       if (isThenable(result)) {
@@ -76,7 +86,7 @@ export default (schema, value, options, resolve) => {
       }
 
       // synchronous error - shouldKeepRunning is true is multiple is false OR the error is the typeCheck error
-      shouldKeepRunning = !multiple || type === 'typeCheck';
+      shouldKeepRunning = !multiple;
 
       return [...acc, returnResult(result)];
     } catch (err) {

@@ -11,5 +11,5 @@ export default ({ now = Date.now, parser = Date.parse } = {}) =>
   extend(mixed, {
     tests: createDateTests({ now, parser }),
     transforms: createDateTransforms({ now, parser }),
-    base: { transforms: [{ type: 'base' }], tests: [{ type: 'typeCheck' }] },
+    base: { transforms: [{ type: 'base' }] },
   });

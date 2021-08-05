@@ -10,5 +10,5 @@ export default extend(mixed, {
   transforms,
   parser,
   merge,
-  base: { transforms: [{ type: 'base' }], tests: [{ type: 'typeCheck' }] },
+  base: { transforms: [{ type: 'base' }] },
 });

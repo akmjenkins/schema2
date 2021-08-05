@@ -6,5 +6,5 @@ import * as tests from './tests';
 export default extend(mixed, {
   tests,
   transforms,
-  base: { transforms: [{ type: 'base' }], tests: [{ type: 'typeCheck' }] },
+  base: { transforms: [{ type: 'base' }] },
 });

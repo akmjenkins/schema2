@@ -1,15 +1,15 @@
 import mixed from '../../src/schemas/mixed';
 import { cast } from '../../src';
-import { createSchemaCreator } from '../fixtures';
+import { createOptionsCreator, createSchemaCreator } from '../fixtures';
 
 describe('mixed - transforms', () => {
-  const schemas = { mixed };
+  const createOptions = createOptionsCreator({ mixed });
   const createSchema = createSchemaCreator('mixed');
 
   it('should cast using const', async () => {
-    const options = { schemas };
-    expect(cast({}, undefined, options)).toBeUndefined();
-    expect(cast({}, null, options)).toBeNull();
+    const options = createOptions();
+    expect(cast(createSchema(), undefined, options)).toBeUndefined();
+    expect(cast(createSchema(), null, options)).toBeNull();
     const schema = createSchema({
       transforms: [{ type: 'const', value: 'fred' }],
     });
@@ -18,7 +18,7 @@ describe('mixed - transforms', () => {
 
   it('should cast using default', () => {
     // undefined should default
-    const options = { schemas };
+    const options = createOptions();
     const schema = createSchema({
       transforms: [{ type: 'default', value: 'joe' }],
     });

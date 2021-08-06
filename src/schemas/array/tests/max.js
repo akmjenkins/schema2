@@ -1,19 +1,12 @@
-import { filteredWithWhere } from '../utils';
+import { makeParams } from '../../utils';
 
-export default () =>
-  ({ value: v, values, where, path, inclusive = true }) =>
-  (value, { resolve, is, createError }) => {
-    const { resolved, subject } = filteredWithWhere(
-      { values, where, path },
-      { is, resolve },
-      value,
-    );
-
-    resolved.value = resolve(v);
-    resolved.inclusive = resolve(inclusive);
+export default ({ value: v, inclusive = true }) =>
+  (value, { resolve, createError }) => {
+    const resolved = { value: resolve(v), inclusive: resolve(inclusive) };
     return (
       (resolved.inclusive
-        ? subject.length <= resolved.value
-        : subject.length < resolved.value) || createError({ resolved })
+        ? value.length <= resolved.value
+        : value.length < resolved.value) ||
+      createError(makeParams({ resolved }))
     );
   };

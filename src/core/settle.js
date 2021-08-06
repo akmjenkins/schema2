@@ -73,7 +73,7 @@ export const settle = (schema, value, options) => {
         ).then(innerRes);
       });
     }),
-  ).then((r) => done(r.filter((f) => !!f)));
+  ).then((r) => done(r.flat().filter((f) => !!f)));
 };
 
 export default settle;

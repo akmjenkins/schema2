@@ -3,8 +3,8 @@ import { makeParams } from '../../utils';
 export default ({ values = [], schemas = [] }) =>
   (value, { resolve, is, createError }) => {
     const resolved = {
-      values: values.map(resolve),
-      schemas: schemas.map(resolve).filter(defined),
+      values: resolve(values).map(resolve),
+      schemas: resolve(schemas).map(resolve).filter(defined),
     };
 
     return (

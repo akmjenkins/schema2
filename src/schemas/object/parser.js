@@ -1,6 +1,6 @@
 import { hasOwnProp, canBailOut } from '../../utils';
 
-export default ({ inner }, value, options, check) => {
+export default ({ inner = {} }, value = {}, options, check) => {
   return Object.entries(inner).reduce(
     (acc, [key, schemaOrRef]) => {
       if (canBailOut(options, acc.results)) return acc;
@@ -13,6 +13,6 @@ export default ({ inner }, value, options, check) => {
         results: [...acc.results, ...results],
       };
     },
-    { value: value || {}, results: [] },
+    { value, results: [] },
   );
 };

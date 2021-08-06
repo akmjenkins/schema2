@@ -1,7 +1,7 @@
 export default () => (value) => {
   if (typeof value === 'string') {
     value = value.replace(/\s/g, '');
-    if (value) return +value;
+    if (value) value = +value;
   }
 
   value = parseFloat(value);

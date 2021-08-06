@@ -16,11 +16,7 @@ describe('array - tests', () => {
     const type = 'typeCheck';
     expect(
       getErrorsAtPath(
-        await getErrorsAsync(
-          createSchema({ nullable: true }),
-          '',
-          createOptions(),
-        ),
+        await getErrorsAsync(createSchema(), '', createOptions()),
       ),
     ).toContainEqual(expect.objectContaining({ type }));
   });
@@ -62,6 +58,169 @@ describe('array - tests', () => {
           options,
         ),
       ),
+    ).toContainEqual(expect.objectContaining({ type }));
+  });
+
+  it('should test length', async () => {
+    const type = 'length';
+    const options = createOptions();
+    const schema = createSchema({
+      tests: [{ type, value: 2 }],
+    });
+
+    await expect(validate(schema, [1, 2], options)).resolves.toEqual([1, 2]);
+    expect(
+      getErrorsAtPath(await getErrorsAsync(schema, [1, 2, 3], options)),
+    ).toContainEqual(expect.objectContaining({ type }));
+  });
+
+  it('should test min', async () => {
+    const type = 'min';
+    const options = createOptions();
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          createSchema({ tests: [{ type, value: 2 }] }),
+          [1],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
+
+    await expect(
+      validate(createSchema({ tests: [{ type, value: 2 }] }), [1, 2], options),
+    ).resolves.toEqual([1, 2]);
+
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          createSchema({ tests: [{ type, value: 2, inclusive: false }] }),
+          [1, 2],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
+
+    await expect(
+      validate(
+        createSchema({ tests: [{ type, value: 2, inclusive: false }] }),
+        [1, 2, 3],
+        options,
+      ),
+    ).resolves.toEqual([1, 2, 3]);
+  });
+
+  it('should test max', async () => {
+    const type = 'max';
+    const options = createOptions();
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          createSchema({ tests: [{ type, value: 2 }] }),
+          [1, 2, 3],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
+
+    await expect(
+      validate(createSchema({ tests: [{ type, value: 2 }] }), [1, 2], options),
+    ).resolves.toEqual([1, 2]);
+
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          createSchema({ tests: [{ type, value: 2, inclusive: false }] }),
+          [1, 2],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
+
+    await expect(
+      validate(
+        createSchema({ tests: [{ type, value: 2, inclusive: false }] }),
+        [1],
+        options,
+      ),
+    ).resolves.toEqual([1]);
+  });
+
+  it('should test between', async () => {
+    const type = 'between';
+    const min = 2;
+    const max = 4;
+    const options = createOptions();
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          createSchema({ tests: [{ type, min, max }] }),
+          [1],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
+
+    await expect(
+      validate(
+        createSchema({ tests: [{ type, min, max }] }),
+        [1, 2, 3],
+        options,
+      ),
+    ).resolves.toEqual([1, 2, 3]);
+
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          createSchema({ tests: [{ type, min, max, inclusive: false }] }),
+          [1, 2],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
+
+    await expect(
+      validate(
+        createSchema({ tests: [{ type, min, max, inclusive: false }] }),
+        [1, 2, 3],
+        options,
+      ),
+    ).resolves.toEqual([1, 2, 3]);
+  });
+
+  it('should test inner (entry)', async () => {
+    const options = createOptions({ schemas: { mixed } });
+    const type = 'oneOf';
+    const schema = createSchema({
+      inner: {
+        type: 'mixed',
+        tests: [{ type, values: [1, 2, 3] }],
+      },
+    });
+
+    await expect(
+      validate(schema, [1, 2, 1, 1, 2, 3], options),
+    ).resolves.toEqual([1, 2, 1, 1, 2, 3]);
+
+    expect(
+      getErrorsAtPath(await getErrorsAsync(schema, [1, 2, 4], options), '2'),
+    ).toContainEqual(expect.objectContaining({ type }));
+  });
+
+  it('should test inner (tuple)', async () => {
+    const options = createOptions({ schemas: { mixed } });
+    const type = 'oneOf';
+    const schema = createSchema({
+      inner: [
+        { type: 'mixed', tests: [{ type, values: [1, 2, 3] }] },
+        { type: 'mixed', tests: [{ type, values: [4, 5, 6] }] },
+      ],
+    });
+
+    await expect(validate(schema, [1, 5], options)).resolves.toEqual([1, 5]);
+
+    expect(
+      getErrorsAtPath(await getErrorsAsync(schema, [4, 2], options), '0'),
     ).toContainEqual(expect.objectContaining({ type }));
   });
 });

@@ -11,7 +11,9 @@ describe('mixed - tests', () => {
   const createSchema = createSchemaCreator('mixed');
   const createOptions = createOptionsCreator({ mixed });
   it('should validate', async () => {
-    await expect(validate({}, 'fred', createOptions())).resolves.toBe('fred');
+    await expect(
+      validate(createSchema(), 'fred', createOptions()),
+    ).resolves.toBe('fred');
   });
 
   it('should resolve at notNullable error', async () => {

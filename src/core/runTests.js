@@ -11,29 +11,28 @@ export default (schema, value, options, resolve, castError) => {
     label = joinPath(path) || 'field',
   } = schema;
 
-  // if there's a castError we're done
-  if (castError)
-    return [
-      errorCreator({
-        type: 'typeCheck',
-        label,
-        schema,
-        params: { subject: value },
-      })(typeError),
-    ];
-
   // null/undefined values are special cases and will not be run through tests
-  if (value === null || value === undefined)
-    return nullable
-      ? []
-      : [
-          errorCreator({
-            type: 'notNullable',
-            label,
-            schema,
-            params: { subject: value },
-          })(),
-        ];
+  if (value === null || value === undefined) {
+    if (!nullable)
+      return castError
+        ? [
+            errorCreator({
+              type: 'typeCheck',
+              label,
+              schema,
+              params: { subject: value },
+            })(typeError),
+          ]
+        : [
+            errorCreator({
+              type: 'notNullable',
+              label,
+              schema,
+              params: { subject: value },
+            })(),
+          ];
+    return [];
+  }
 
   const getOperator = createGetOperator(schemaType, 'tests', schemas);
 

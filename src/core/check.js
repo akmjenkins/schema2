@@ -21,7 +21,7 @@ const check = (schema, value, options) => {
 
   const thisResolver = resolver(path);
 
-  const { type, ref, parser } = schema;
+  const { type, ref } = schema;
 
   // if we're checking a ref, just return the value
   if (ref) return thisResolver(schema);
@@ -41,6 +41,7 @@ const check = (schema, value, options) => {
     } catch (err) {
       if (!assert) throw err;
       typeError = err;
+      value = null;
     }
   }
 
@@ -51,8 +52,8 @@ const check = (schema, value, options) => {
   const results = testResults.length ? [[joinPath(path), testResults]] : [];
 
   // no custom parser provided by the schema definition (array/object), we're done
+  const parser = schemas[type].parser;
   if (!parser) return { value, results };
-
   const nextChecker = (s, v, path) => check(s, v, nextOptions(options, path));
 
   const { value: parsedValue = value, results: parsedResults = [] } = parser(

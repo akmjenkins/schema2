@@ -4,5 +4,5 @@ import * as transforms from './transforms';
 
 export default extend(mixed, {
   transforms,
-  base: { transforms: [{ type: 'base' }], tests: [] },
+  base: { transforms: [{ type: 'base' }] },
 });

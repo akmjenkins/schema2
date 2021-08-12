@@ -1,14 +1,8 @@
-import { createTypeCheck, includeTransforms } from '../../utils';
-import * as booleanTransforms from './transforms';
+import mixed from '../mixed';
+import { extend } from '../utils';
+import * as transforms from './transforms';
 
-const booleanTypeCheck = createTypeCheck(
-  (val) => val instanceof Boolean || typeof val === 'boolean',
-);
-
-export const schema = {
-  transforms: ['booleanTransform'],
-  tests: ['booleanTypeCheck'],
-};
-
-export const tests = { booleanTypeCheck };
-export const transforms = includeTransforms(booleanTransforms, ['boolean']);
+export default extend(mixed, {
+  transforms,
+  base: { transforms: [{ type: 'base' }] },
+});

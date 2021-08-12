@@ -1,11 +1,14 @@
-import { createTypeCheck, includeTransforms, isObject } from '../../utils';
-import * as objectTransforms from './transforms';
-const objectTypeCheck = createTypeCheck(isObject);
+import mixed from '../mixed';
+import { extend } from '../utils';
+import * as transforms from './transforms';
+import * as tests from './tests';
+import parser from './parser';
+import merge from './merge';
 
-export const schema = {
-  transforms: ['objectTransform'],
-  tests: ['objectTypeCheck'],
-};
-
-export const tests = { objectTypeCheck };
-export const transforms = includeTransforms(objectTransforms, ['object']);
+export default extend(mixed, {
+  tests,
+  transforms,
+  parser,
+  merge,
+  base: { transforms: [{ type: 'base' }] },
+});

@@ -1,12 +1,14 @@
-import { createTypeCheck, includeTransforms } from '../../utils';
-import * as arrayTransforms from './transforms';
+import mixed from '../mixed';
+import { extend } from '../utils';
+import * as transforms from './transforms';
+import * as tests from './tests';
+import parser from './parser';
+import merge from './merge';
 
-const arrayTypeCheck = createTypeCheck(Array.isArray);
-
-export const schema = {
-  transforms: ['arrayTransform'],
-  tests: ['arrayTypeCheck'],
-};
-
-export const tests = { arrayTypeCheck };
-export const transforms = includeTransforms(arrayTransforms, ['array']);
+export default extend(mixed, {
+  tests,
+  transforms,
+  parser,
+  merge,
+  base: { transforms: [{ type: 'base' }] },
+});

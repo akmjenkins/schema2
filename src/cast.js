@@ -1,11 +1,14 @@
-import settle from './settle';
+import { settle, defaults } from './core';
 import is from './is';
-import defaults from './defaults';
 
-export default (schema, value, options) =>
+const cast = (schema, value, options) =>
   settle(schema, value, {
     ...defaults(options),
     coerce: true,
     is,
+    cast,
+    sync: true,
     assert: false,
   });
+
+export default cast;

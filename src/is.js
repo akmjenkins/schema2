@@ -1,6 +1,4 @@
-import settle from './settle';
-import ValidationError from './ValidationError';
-import defaults from './defaults';
+import { ValidationError, settle, defaults } from './core';
 
 const is = (schema, value, options) => {
   options = defaults(options);
@@ -9,9 +7,7 @@ const is = (schema, value, options) => {
     const resolved = settle(schema, value, { ...options, is, assert: true });
     return sync ? true : resolved.then(() => true).catch(() => false);
   } catch (err) {
-    if (err instanceof ValidationError) {
-      return false;
-    }
+    if (err instanceof ValidationError) return false;
     throw err;
   }
 };

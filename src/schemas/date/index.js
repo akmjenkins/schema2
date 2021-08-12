@@ -1,15 +1,15 @@
-import { createTypeCheck, includeTransforms } from '../../utils';
-import * as dateTransforms from './transforms';
-import * as dateTests from './tests';
+import mixed from '../mixed';
+import { extend } from '../utils';
+import createDateTransforms from './transforms';
+import createDateTests from './tests';
 
-const dateTypeCheck = createTypeCheck(
-  (val) => val instanceof Date && !isNaN(val.getTime()),
-);
-
-export const schema = {
-  transforms: ['dateTransform'],
-  tests: ['dateTypeCheck'],
-};
-
-export const tests = { dateTypeCheck, ...dateTests };
-export const transforms = includeTransforms(dateTransforms, ['date']);
+// date is a special schema - the user must pass in a parser to parse things into Date objects
+// highly recommend sugardate for NLP abilities
+// also can pass in a function that returns "now" for the purposes of past/future validators, haven't found a use case for it but I feel like it might pop up
+// default parser is Date.parse (highly discouraged in production) and default now is Date.now
+export default ({ now = Date.now, parser = Date.parse } = {}) =>
+  extend(mixed, {
+    tests: createDateTests({ now, parser }),
+    transforms: createDateTransforms({ now, parser }),
+    base: { transforms: [{ type: 'base' }] },
+  });

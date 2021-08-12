@@ -1,60 +1,14 @@
-import { tests as allTests, transforms as allTransforms } from './common';
-import defaultMessages from './messages';
-import { array, boolean, mixed, number, object, string, date } from './schemas';
-import defaults from './defaults';
-import c from './cast';
-import i from './is';
-import v from './validate';
+import { default as _cast } from './cast';
+import { default as _validate } from './validate';
+import { default as _is } from './is';
+import * as schemas from './schemas';
+export { ValidationError } from './core';
 
-const includeSchemas = (schemas) =>
-  Object.entries(schemas).reduce(
-    (acc, [name, { schema, tests, transforms }]) => ({
-      ...acc,
-      schemas: {
-        ...acc.schemas,
-        [name]: schema,
-      },
-      tests: {
-        ...acc.tests,
-        ...tests,
-      },
-      transforms: {
-        ...acc.transforms,
-        ...transforms,
-      },
-    }),
-    { schemas: {}, tests: {}, transforms: {} },
-  );
+export const cast = (schema, value, options = {}) =>
+  _cast(schema, value, { ...options, schemas });
 
-const {
-  schemas: allSchemas,
-  tests: schemaTests,
-  transforms: schemaTransforms,
-} = includeSchemas({ array, boolean, mixed, number, object, string, date });
+export const validate = (schema, value, options = {}) =>
+  _validate(schema, value, { ...options, schemas });
 
-const all = (opts) => {
-  const { schemas, messages, transforms, tests, ...rest } = defaults(opts);
-  return {
-    ...rest,
-    messages: defaultMessages(messages),
-    schemas: {
-      ...allSchemas,
-      ...schemas,
-    },
-    transforms: {
-      ...allTransforms,
-      ...schemaTransforms,
-      ...transforms,
-    },
-    tests: {
-      ...allTests,
-      ...schemaTests,
-      ...tests,
-    },
-  };
-};
-
-export const cast = (schema, value, options) => c(schema, value, all(options));
-export const is = (schema, value, options) => i(schema, value, all(options));
-export const validate = (schema, value, options) =>
-  v(schema, value, all(options));
+export const is = (schema, value, options = {}) =>
+  _is(schema, value, { ...options, schemas });

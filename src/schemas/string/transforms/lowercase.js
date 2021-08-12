@@ -1,1 +1,1 @@
-export default () => (v) => (v ? v.toLowerCase() : v);
+export default () => (v) => v.toLowerCase();

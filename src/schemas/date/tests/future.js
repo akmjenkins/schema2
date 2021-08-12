@@ -1,8 +1,7 @@
-import { Date as SDate } from 'sugar-date';
-import { createValidator } from '../../../utils';
+const future =
+  ({ now }) =>
+  () =>
+  (value) =>
+    value > now();
 
-export default createValidator(
-  (error) => (value, _, passError) =>
-    new SDate(value).isFuture().raw || passError(error),
-  { allowSchemas: ['date'] },
-);
+export default future;

@@ -1,11 +1,10 @@
-import { createTypeCheck, includeTransforms } from '../../utils';
-import * as stringTransforms from './transforms';
-const stringTypeCheck = createTypeCheck((v) => typeof v === 'string');
+import mixed from '../mixed';
+import { extend } from '../utils';
+import * as transforms from './transforms';
+import * as tests from './tests';
 
-export const schema = {
-  transforms: ['stringTransform'],
-  tests: ['stringTypeCheck'],
-};
-
-export const tests = { stringTypeCheck };
-export const transforms = includeTransforms(stringTransforms, ['string']);
+export default extend(mixed, {
+  tests,
+  transforms,
+  base: { transforms: [{ type: 'base' }], tests: [{ type: 'typeCheck' }] },
+});

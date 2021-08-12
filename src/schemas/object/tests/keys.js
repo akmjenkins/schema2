@@ -2,8 +2,6 @@ import { makeParams } from '../../utils';
 export default ({ schema }) =>
   (value, { is, resolve, createError }) => {
     const resolved = { schema: resolve(schema) };
-    return (
-      Object.keys(value).every((v) => is(resolved.schema, v)) ||
-      createError(makeParams({ resolved }))
-    );
+    const failed = Object.keys(value).filter((v) => !is(resolved.schema, v));
+    return failed.length === 0 || createError(makeParams({ resolved, failed }));
   };

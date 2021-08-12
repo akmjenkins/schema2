@@ -1,4 +1,3 @@
-import * as yup from 'yup';
 import array from '../../src/schemas/array';
 import mixed from '../../src/schemas/mixed';
 import { cast } from '../../src';

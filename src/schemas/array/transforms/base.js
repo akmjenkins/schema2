@@ -7,7 +7,7 @@ export default () => (val) => {
     }
 
   if (Array.isArray(val)) return val;
-  throw new Error(
+  throw new TypeError(
     `The value '${val}' could not be cast to a value that satisfies the array schema`,
   );
 };

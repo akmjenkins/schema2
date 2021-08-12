@@ -7,7 +7,7 @@ export default () => (value) => {
   value = parseFloat(value);
   if (typeof value === 'number' && !isNaN(value)) return value;
 
-  throw new Error(
+  throw new TypeError(
     `The value '${value}' could not be cast to a value that satisfies the number schema`,
   );
 };

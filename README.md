@@ -8,7 +8,7 @@ Mainly because JSON schema's syntax is inconsistent. Every draft there's a new k
 
 Popular validators like [ajv](https://github.com/ajv-validator/ajv) or [hyperjump](https://github.com/hyperjump-io/json-schema-validator) are undoubtedly powerful, but, having evolved with JSON schema, have lots of complex configuration options, inconsistent syntax, and have [become](https://bundlephobia.com/result?p=@hyperjump/json-schema) [bloated](https://bundlephobia.com/result?p=ajv).
 
-`schema2`, at it's core, is only 2kb minzipped and under 6kb minzipped for all 7 schemas (mixed, number, boolean, string, date, object, array) including all 22 transformation operators and all 37 test operators.
+`schema2`, at it's core, is only 2kb minzipped and under 6kb minzipped for all 7 schemas (mixed, number, boolean, string, date, object, array) including all 24 transformation operators and all 35 test operators.
 
 ## Keywords
 

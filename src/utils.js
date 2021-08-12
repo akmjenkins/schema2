@@ -1,5 +1,5 @@
 export const isObject = (o) =>
-  Object.prototype.toString.call(o) === '[object Object]';
+  Object.prototype.toString.call(o) === '[object Object]' && !Array.isArray(o);
 
 export const nextOptions = (options, path) => ({
   ...options,

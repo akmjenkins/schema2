@@ -39,7 +39,7 @@ const check = (schema, value, options) => {
     try {
       value = runTransforms(schema, value, options, thisResolver);
     } catch (err) {
-      if (!assert) throw err;
+      if (!assert || !(err instanceof TypeError)) throw err;
       typeError = err;
       value = null;
     }
@@ -53,7 +53,7 @@ const check = (schema, value, options) => {
 
   // no custom parser provided by the schema definition (array/object), we're done
   const parser = schemas[type].parser;
-  if (!parser) return { value, results };
+  if (!parser || typeError) return { value, results };
   const nextChecker = (s, v, path) => check(s, v, nextOptions(options, path));
 
   const { value: parsedValue = value, results: parsedResults = [] } = parser(

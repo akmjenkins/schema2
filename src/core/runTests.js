@@ -58,6 +58,7 @@ export default (schema, value, options, resolve, castError) => {
     const testOptions = {
       sync,
       resolve,
+      schema,
       is: (schema, value) => is(schema, value, { ...options, sync: true }),
       createError,
       // allows a validator to run another test on this value by name - i.e. negate

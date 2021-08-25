@@ -5,7 +5,6 @@ export default ({ inner = {} }, value = {}, options, check) => {
     (acc, [key, schemaOrRef]) => {
       if (canBailOut(options, acc.results)) return acc;
       const { value, results } = check(schemaOrRef, acc.value[key], key);
-      // console.log(value, results, acc.value[key]);
       return {
         value:
           value || hasOwnProp(acc.value, key)

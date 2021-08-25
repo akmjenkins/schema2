@@ -41,7 +41,6 @@ export default (schema, value, options, resolve, castError) => {
   let shouldKeepRunning = true;
 
   // tests can be an array or an object
-
   return tests.reduce((acc, { type, error, ...args }) => {
     if (!shouldKeepRunning) return acc;
 

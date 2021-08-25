@@ -1,6 +1,4 @@
-const match = /\$\{\s*(\w+)\s*\}/g;
-const interpolate = (subject = '', params = {}) =>
-  subject.replace(match, (_, t) => params[t]);
+import { interpolate } from '../utils';
 
 const defaultMessages = {
   default: '${label} is invalid',

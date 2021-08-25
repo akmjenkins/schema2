@@ -1,9 +1,9 @@
-import * as string from './string';
-import * as boolean from './boolean';
-import * as mixed from './mixed';
-import * as number from './number';
-import * as array from './array';
-import * as object from './object';
-import * as date from './date';
+import string from './string';
+import boolean from './boolean';
+import mixed from './mixed';
+import number from './number';
+import array from './array';
+import object from './object';
+import date from './date';
 export { extend } from './utils';
 export { string, boolean, mixed, number, array, object, date };

@@ -39,3 +39,10 @@ export const canBailOut = ({ assert, abortEarly }, results) =>
   assert && abortEarly && hasSynchronousError(results);
 
 export const defined = (u) => u !== undefined;
+
+const match = /\$\{\s*(.+?)\s*\}/g;
+export const interpolate = (subject = '', params = {}, matcher = match) =>
+  subject.replace(matcher, (_, t) => {
+    console.log(params, t);
+    return get(params, t);
+  });

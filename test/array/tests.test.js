@@ -110,6 +110,45 @@ describe('array - tests', () => {
     ).resolves.toEqual([1, 2, 3]);
   });
 
+  it('should test min with schema', async () => {
+    const type = 'min';
+    const options = createOptions({ schemas: { mixed } });
+
+    const where = { type: 'mixed', tests: [{ type: 'is', value: 1 }] };
+    const schema = createSchema({ tests: [{ type, value: 2, where }] });
+
+    await expect(validate(schema, [1, 1, 1], options)).resolves.toEqual([
+      1, 1, 1,
+    ]);
+
+    expect(
+      getErrorsAtPath(await getErrorsAsync(schema, [1, 2, 2], options)),
+    ).toContainEqual(expect.objectContaining({ type }));
+  });
+
+  it('should test min with schema and path', async () => {
+    const type = 'min';
+    const options = createOptions({ schemas: { mixed } });
+
+    const path = 'num';
+    const where = { type: 'mixed', tests: [{ type: 'is', value: 1 }] };
+    const schema = createSchema({ tests: [{ type, value: 2, where, path }] });
+
+    await expect(
+      validate(schema, [{ num: 1 }, { num: 1 }, { num: 1 }], options),
+    ).resolves.toEqual([{ num: 1 }, { num: 1 }, { num: 1 }]);
+
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          schema,
+          [{ num: 1 }, { num: 2 }, { num: 2 }],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
+  });
+
   it('should test max', async () => {
     const type = 'max';
     const options = createOptions();
@@ -144,6 +183,45 @@ describe('array - tests', () => {
         options,
       ),
     ).resolves.toEqual([1]);
+  });
+
+  it('should test max with schema', async () => {
+    const type = 'max';
+    const options = createOptions({ schemas: { mixed } });
+
+    const where = { type: 'mixed', tests: [{ type: 'is', value: 1 }] };
+    const schema = createSchema({ tests: [{ type, value: 2, where }] });
+
+    await expect(validate(schema, [1, 2, 2], options)).resolves.toEqual([
+      1, 2, 2,
+    ]);
+
+    expect(
+      getErrorsAtPath(await getErrorsAsync(schema, [1, 1, 1], options)),
+    ).toContainEqual(expect.objectContaining({ type }));
+  });
+
+  it('should test max with schema and path', async () => {
+    const type = 'max';
+    const options = createOptions({ schemas: { mixed } });
+
+    const path = 'num';
+    const where = { type: 'mixed', tests: [{ type: 'is', value: 1 }] };
+    const schema = createSchema({ tests: [{ type, value: 2, where, path }] });
+
+    await expect(
+      validate(schema, [{ num: 1 }, { num: 2 }, { num: 2 }], options),
+    ).resolves.toEqual([{ num: 1 }, { num: 2 }, { num: 2 }]);
+
+    expect(
+      getErrorsAtPath(
+        await getErrorsAsync(
+          schema,
+          [{ num: 1 }, { num: 1 }, { num: 1 }],
+          options,
+        ),
+      ),
+    ).toContainEqual(expect.objectContaining({ type }));
   });
 
   it('should test between', async () => {

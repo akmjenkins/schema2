@@ -7,7 +7,8 @@ export default (schema, value, options, resolve) => {
   const transformOptions = {
     schema,
     resolve,
-    is: (schema, value) => is(schema, value, { ...options, sync: true }),
+    is: (schema, value) =>
+      is(schema, value, { ...options, assert: true, sync: true }),
     cast: (schema, value) => cast(schema, value, options),
   };
 

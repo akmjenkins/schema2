@@ -67,7 +67,7 @@ describe('string - transforms', () => {
           transforms: [
             {
               type: 'capitalize',
-              only: { tests: [{ type: 'not', value: 'some' }] },
+              only: /[^some]/,
             },
           ],
         }),
@@ -81,7 +81,7 @@ describe('string - transforms', () => {
           transforms: [
             {
               type: 'capitalize',
-              except: { tests: [{ type: 'is', value: 'some' }] },
+              except: /some/,
             },
           ],
         }),

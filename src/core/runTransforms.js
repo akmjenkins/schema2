@@ -1,10 +1,11 @@
 import { createGetOperator } from '../utils';
 
-export default (schema, value, options, resolve) => {
-  const { schemas, is, cast } = options;
+export default (schema, value, options, resolve, schemas) => {
+  const { is, cast } = options;
   const { type: schemaType, transforms } = schema;
 
   const transformOptions = {
+    ...options,
     schema,
     resolve,
     is: (schema, value) =>

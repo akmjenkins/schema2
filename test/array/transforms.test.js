@@ -1,31 +1,26 @@
-import array from '../../src/schemas/array';
-import mixed from '../../src/schemas/mixed';
 import { cast } from '../../src';
-import { createSchemaCreator, createOptionsCreator } from '../fixtures';
+import { createSchemaCreator } from '../fixtures';
 
 describe('array - transforms', () => {
   const createSchema = createSchemaCreator('array');
-  const createOptions = createOptionsCreator({ array });
 
   it('should base transform', () => {
     const schema = createSchema();
-    const options = createOptions();
-    expect(() => cast(schema, '', options)).toThrowError();
-    expect(cast(schema, '[]', options)).toEqual([]);
-    expect(() => cast(schema, {}, options)).toThrowError();
+    expect(() => cast(schema, '')).toThrowError();
+    expect(cast(schema, '[]')).toEqual([]);
+    expect(() => cast(schema, {})).toThrowError();
   });
 
   it('should unique transform', () => {
     const type = 'unique';
     const schema = createSchema({ transforms: [{ type }] });
-    const options = createOptions();
-    expect(cast(schema, [1, 2, 3, 2, 3], options)).toEqual([1, 2, 3]);
+    expect(cast(schema, [1, 2, 3, 2, 3])).toEqual([1, 2, 3]);
   });
 
   it('should unique transform by path', () => {
     const type = 'unique';
     const path = 'id';
-    const options = createOptions({ context: { path } });
+    const options = { context: { path } };
     expect(
       cast(
         createSchema({ transforms: [{ type, path }] }),
@@ -67,7 +62,7 @@ describe('array - transforms', () => {
   it('should sort', () => {
     const type = 'sort';
     const path = 'id';
-    const options = createOptions({ context: { path } });
+    const options = { context: { path } };
 
     const alphaSubject = ['joe', 'jim', 'bill', 'fred'];
     const numericSubject = [10, 7, 9, 8];
@@ -120,7 +115,7 @@ describe('array - transforms', () => {
 
   it('should filter using only by value', () => {
     const type = 'only';
-    const options = createOptions({ context: { vs: [1, 2, 3], a: 1, c: 3 } });
+    const options = { context: { vs: [1, 2, 3], a: 1, c: 3 } };
     const val = [2, 3, 4, 5, 6];
     const expected = [2, 3];
     expect(
@@ -153,9 +148,7 @@ describe('array - transforms', () => {
   it('should filter using only by value and path', () => {
     const type = 'only';
     const path = 'id';
-    const options = createOptions({
-      context: { vs: [1, 2, 3], a: 1, c: 3, path },
-    });
+    const options = { context: { vs: [1, 2, 3], a: 1, c: 3, path } };
     const value = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }];
     const expected = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
@@ -192,10 +185,7 @@ describe('array - transforms', () => {
       type: 'mixed',
       tests: [{ type: 'oneOf', values: [1, 2, 3] }],
     };
-    const options = createOptions({
-      schemas: { mixed },
-      context: { vs: [1, 2, 3], a: 1, c: 3, where },
-    });
+    const options = { context: { vs: [1, 2, 3], a: 1, c: 3, where } };
 
     expect(
       cast(createSchema({ transforms: [{ type, where }] }), value, options),
@@ -219,10 +209,7 @@ describe('array - transforms', () => {
       type: 'mixed',
       tests: [{ type: 'oneOf', values: [1, 2, 3] }],
     };
-    const options = createOptions({
-      schemas: { mixed },
-      context: { vs: [1, 2, 3], a: 1, c: 3, where, path },
-    });
+    const options = { context: { vs: [1, 2, 3], a: 1, c: 3, where, path } };
 
     expect(
       cast(
@@ -249,7 +236,7 @@ describe('array - transforms', () => {
     const type = 'except';
     const value = [2, 3, 4, 5, 6];
     const expected = [4, 5, 6];
-    const options = createOptions({ context: { vs: [1, 2, 3], a: 1, c: 3 } });
+    const options = { context: { vs: [1, 2, 3], a: 1, c: 3 } };
     expect(
       cast(
         createSchema({ transforms: [{ type, values: [1, 2, 3] }] }),
@@ -285,10 +272,7 @@ describe('array - transforms', () => {
       type: 'mixed',
       tests: [{ type: 'oneOf', values: [1, 2, 3] }],
     };
-    const options = createOptions({
-      schemas: { mixed },
-      context: { vs: [1, 2, 3], a: 1, c: 3, where },
-    });
+    const options = { context: { vs: [1, 2, 3], a: 1, c: 3, where } };
 
     expect(
       cast(createSchema({ transforms: [{ type, where }] }), value, options),

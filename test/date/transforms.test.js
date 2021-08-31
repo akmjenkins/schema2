@@ -1,20 +1,16 @@
 import { Date as SDate } from 'sugar-date';
-import createDateSchema from '../../src/schemas/date';
 import { cast } from '../../src';
-import { createSchemaCreator, createOptionsCreator } from '../fixtures';
+import { createSchemaCreator } from '../fixtures';
 
 describe('date - tests', () => {
   const createSchema = createSchemaCreator('date');
-  const parser = SDate.create;
-  const createOptions = createOptionsCreator({
-    date: createDateSchema({ parser }),
-  });
+  const dateParser = (date) => SDate.create(date, { fromUTC: true });
+  const options = { dateParser };
 
   it('should base transform', async () => {
     const schema = createSchema();
-    const options = createOptions();
     const str = 'last Tuesday';
-    expect(cast(schema, str, options)).toEqual(parser(str));
+    expect(cast(schema, str, options)).toEqual(dateParser(str));
   });
 
   it('should transform according to tersity', async () => {
@@ -22,7 +18,6 @@ describe('date - tests', () => {
     const schema = createSchema({
       transforms: [{ type: 'tersity', value: tersity }],
     });
-    const options = createOptions();
     const str = 'ten years ago';
     const then = new Date().getUTCFullYear() - 10;
     const result = cast(schema, str, options);

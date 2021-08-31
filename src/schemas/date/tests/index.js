@@ -1,11 +1,5 @@
-import min from './min';
-import max from './max';
-import future from './future';
-import past from './past';
-import between from './between';
-
-export default (...args) =>
-  [min, max, future, past, between].reduce(
-    (acc, f) => ({ ...acc, [f.name]: f(...args) }),
-    {},
-  );
+export { default as min } from './min';
+export { default as max } from './max';
+export { default as future } from './future';
+export { default as past } from './past';
+export { default as between } from './between';

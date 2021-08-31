@@ -1,8 +1,8 @@
 import { createGetOperator, isThenable, joinPath } from '../utils';
 import errorCreator from './errorCreator';
 
-export default (schema, value, options, resolve, castError) => {
-  const { sync, multiple, path, is, schemas } = options;
+export default (schema, value, options, resolve, castError, schemas) => {
+  const { sync, multiple, path, is } = options;
   const {
     tests,
     nullable,
@@ -55,6 +55,7 @@ export default (schema, value, options, resolve, castError) => {
     });
 
     const testOptions = {
+      ...options,
       sync,
       resolve,
       schema,

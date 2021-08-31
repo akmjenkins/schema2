@@ -1,4 +1,5 @@
 import { nextOptions, joinPath } from '../utils';
+import * as schemas from '../schemas';
 import merge from './merge';
 import { createResolver } from './resolve';
 import resolveSchema from './resolveSchema';
@@ -13,7 +14,7 @@ const check = (schema, value, options) => {
       `A schema must contain a type of ref property ${options.path}`,
     );
 
-  const { schemas, path, assert, strict } = options;
+  const { path, assert, strict } = options;
 
   const resolver =
     options.resolver ||
@@ -37,7 +38,7 @@ const check = (schema, value, options) => {
   let typeError;
   if (!strict) {
     try {
-      value = runTransforms(schema, value, options, thisResolver);
+      value = runTransforms(schema, value, options, thisResolver, schemas);
     } catch (err) {
       if (!assert || !(err instanceof TypeError)) throw err;
       typeError = err;
@@ -47,7 +48,7 @@ const check = (schema, value, options) => {
 
   // assert only if necessary
   const testResults = assert
-    ? runTests(schema, value, options, thisResolver, typeError)
+    ? runTests(schema, value, options, thisResolver, typeError, schemas)
     : [];
   const results = testResults.length ? [[joinPath(path), testResults]] : [];
 

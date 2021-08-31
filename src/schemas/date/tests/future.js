@@ -1,7 +1,6 @@
 const future =
-  ({ now }) =>
   () =>
-  (value) =>
+  (value, { now }) =>
     value > now();
 
 export default future;

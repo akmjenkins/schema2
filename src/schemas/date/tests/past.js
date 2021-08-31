@@ -1,7 +1,6 @@
 const past =
-  ({ now }) =>
   () =>
-  (value) =>
+  (value, { now }) =>
     value < now();
 
 export default past;

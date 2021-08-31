@@ -14,7 +14,7 @@ const resolveCondition = ({ when, then, otherwise }, resolver, options) =>
     ),
   )
     ? then
-    : otherwise) ?? {};
+    : otherwise) || {};
 
 export default (schema, resolver, options) => {
   const { conditions = [], ...rest } = schema;

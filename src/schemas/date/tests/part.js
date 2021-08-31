@@ -5,10 +5,10 @@ const METHOD_MAP = {
   date: 'getDate',
   year: 'getFullYear',
   month: 'getMonth',
-  hours: 'getHours',
-  minutes: 'getMinutes',
-  seconds: 'getSeconds',
-  milliseconds: 'getMilliseconds',
+  hour: 'getHours',
+  minute: 'getMinutes',
+  second: 'getSeconds',
+  millisecond: 'getMilliseconds',
 };
 
 const UTC_METHOD_MAP = {
@@ -16,10 +16,10 @@ const UTC_METHOD_MAP = {
   date: 'getUTCDate',
   year: 'getUTCFullYear',
   month: 'getUTCMonth',
-  hours: 'getUTCHours',
-  minutes: 'getUTCMinutes',
-  seconds: 'getUTCSeconds',
-  milliseconds: 'getUTCMilliseconds',
+  hour: 'getUTCHours',
+  minute: 'getUTCMinutes',
+  second: 'getUTCSeconds',
+  millisecond: 'getUTCMilliseconds',
 };
 
 export default ({ part, tests, utc = true }) =>

@@ -26,6 +26,20 @@ describe('date - tests', () => {
     );
   });
 
+  it('should validate part', async () => {
+    const type = 'part';
+    // "is date on the weekend" validator
+    const tests = [{ type: 'oneOf', values: [0, 6] }];
+    const schema = createSchema({ tests: [{ type, part: 'day', tests }] });
+
+    const errors = await getErrorsAsync(schema, 'last Tuesday', options);
+    expect(getErrorsAtPath(errors)[0]).toEqual(
+      expect.objectContaining({ type }),
+    );
+
+    await validate(schema, 'last Saturday', options);
+  });
+
   it('should validate past', async () => {
     const type = 'past';
     const schema = createSchema({ tests: [{ type }] });

@@ -1,8 +1,7 @@
 import { isValidDate, getTersity } from '../utils';
 import { makeParams } from '../../utils';
 
-const min =
-  ({ value: v, inclusive = true, tersity }) =>
+export default ({ value: v, inclusive = true, tersity }) =>
   (value, { resolve, createError, dateParser }) => {
     const resolved = {
       value: resolve(v),
@@ -22,5 +21,3 @@ const min =
       ? a >= b
       : a > b || createError(makeParams({ resolved }));
   };
-
-export default min;

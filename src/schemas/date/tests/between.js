@@ -1,8 +1,7 @@
 import { getTersity, isValidDate } from '../utils';
 import { makeParams } from '../../utils';
 
-const between =
-  ({ min, max, inclusive = true, tersity }) =>
+export default ({ min, max, inclusive = true, tersity }) =>
   (value, { resolve, createError, dateParser }) => {
     const resolved = {
       min: resolve(min),
@@ -34,5 +33,3 @@ const between =
       createError(makeParams({ resolved }))
     );
   };
-
-export default between;

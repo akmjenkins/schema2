@@ -11,6 +11,7 @@ module.exports = {
   },
   settings: {
     'import/resolver': {
+      typescript: {},
       node: {
         paths: ['./src'],
       },
@@ -22,6 +23,7 @@ module.exports = {
     'plugin:import/errors',
     'plugin:import/warnings',
   ],
+  ignorePatterns: ['build/*'],
   rules: {
     semi: ['error', 'always', { omitLastInOneLineBlock: true }],
     'no-unused-vars': 1,
@@ -48,7 +50,16 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/test/**/*.js'],
+      files: ['**/*.ts'],
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: [
+        'plugin:@typescript-eslint/eslint-recommended',
+        'plugin:@typescript-eslint/recommended',
+      ],
+    },
+    {
+      files: ['**/test/**/*.js', '**/typescript_test/**/*.ts'],
       env: {
         es6: true,
         jest: true,

@@ -1,5 +1,5 @@
-import { Ref } from "src/common";
-import { NumberTests } from "src/schemas";
+import { Ref } from "../common";
+import { Tests as NumberTests } from "../number";
 
 type Tersity = 'day' | 'month' | 'year' | 'hour' | 'minute' | 'second' | 'millisecond';
 

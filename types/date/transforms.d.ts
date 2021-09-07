@@ -3,7 +3,7 @@ type Tersity = {
     value: 'millisecond' | 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year'
 }
 
-type ManpulateParams = {
+type ManipulateParams = {
     milliseconds?: number;
     seconds?: number;
     minutes?: number;
@@ -14,11 +14,11 @@ type ManpulateParams = {
     years?: number;
 }
 
-type Add = ManpulateParams & {
+type Add = ManipulateParams & {
     type: 'add';
 }
 
-type Subtract = ManpulateParams & {
+type Subtract = ManipulateParams & {
     type: 'subtract';
 }
 

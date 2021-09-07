@@ -1,7 +1,3 @@
-const past =
-  ({ now }) =>
-  () =>
-  (value) =>
+export default () =>
+  (value, { now }) =>
     value < now();
-
-export default past;

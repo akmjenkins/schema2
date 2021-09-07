@@ -1,7 +1,3 @@
-const future =
-  ({ now }) =>
-  () =>
-  (value) =>
+export default () =>
+  (value, { now }) =>
     value > now();
-
-export default future;

@@ -19,10 +19,3 @@ export const getErrorsAtPath = (errors, path = '') =>
 export const createSchemaCreator =
   (type) =>
   (opts = {}) => ({ type, ...opts });
-
-export const createOptionsCreator =
-  (schema) =>
-  ({ schemas = {}, ...opts } = {}) => ({
-    schemas: { ...schemas, ...schema },
-    ...opts,
-  });

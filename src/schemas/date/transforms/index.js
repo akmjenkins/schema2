@@ -1,11 +1,4 @@
-import base from './base';
-import tersity from './tersity';
-
-export default (...args) =>
-  [base, tersity].reduce(
-    (acc, f) => ({
-      ...acc,
-      [f.name]: f(...args),
-    }),
-    {},
-  );
+export { default as base } from './base';
+export { default as tersity } from './tersity';
+export { default as add } from './add';
+export { default as subtract } from './subtract';

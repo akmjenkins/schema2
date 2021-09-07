@@ -1,23 +1,18 @@
 import { Date as SDate } from 'sugar-date';
-import createDateSchema from '../../src/schemas/date';
 import { validate } from '../../src';
 import {
   getErrorsAsync,
   getErrorsAtPath,
   createSchemaCreator,
-  createOptionsCreator,
 } from '../fixtures';
 
 describe('date - tests', () => {
-  const parser = (date) => SDate.create(date, { fromUTC: true });
+  const dateParser = (date) => SDate.create(date, { fromUTC: true });
   const createSchema = createSchemaCreator('date');
-  const createOptions = createOptionsCreator({
-    date: createDateSchema({ parser }),
-  });
+  const options = { dateParser };
 
   it('should validate typeError', async () => {
     const schema = createSchema({ typeError: 'couldnt parse date' });
-    const options = createOptions();
     const errors = await getErrorsAsync(schema, 'then', options);
     expect(getErrorsAtPath(errors)[0]).toEqual(
       expect.objectContaining({
@@ -31,45 +26,58 @@ describe('date - tests', () => {
     );
   });
 
+  it('should validate part', async () => {
+    const type = 'part';
+    // "is date on the weekend" validator
+    const tests = [{ type: 'oneOf', values: [0, 6] }];
+    const schema = createSchema({ tests: [{ type, part: 'day', tests }] });
+
+    const errors = await getErrorsAsync(schema, 'last Tuesday', options);
+    expect(getErrorsAtPath(errors)[0]).toEqual(
+      expect.objectContaining({ type }),
+    );
+
+    await validate(schema, 'last Saturday', options);
+  });
+
   it('should validate past', async () => {
     const type = 'past';
     const schema = createSchema({ tests: [{ type }] });
-    const options = createOptions();
     const errors = await getErrorsAsync(schema, 'tomorrow', options);
     expect(getErrorsAtPath(errors)[0]).toEqual(
       expect.objectContaining({ type }),
     );
 
     await expect(validate(schema, 'yesterday', options)).resolves.toEqual(
-      parser('yesterday'),
+      dateParser('yesterday'),
     );
   });
 
   it('should validate future', async () => {
     const type = 'future';
     const schema = createSchema({ tests: [{ type }] });
-    const options = createOptions();
     const errors = await getErrorsAsync(schema, 'yesterday', options);
     expect(getErrorsAtPath(errors)[0]).toEqual(
       expect.objectContaining({ type }),
     );
 
     await expect(validate(schema, 'tomorrow', options)).resolves.toEqual(
-      parser('tomorrow'),
+      dateParser('tomorrow'),
     );
   });
 
   it('should validate max', async () => {
     const type = 'max';
     const schema = createSchema({ tests: [{ type, value: 'yesterday' }] });
-    const options = createOptions();
     const errors = await getErrorsAsync(schema, 'now', options);
     expect(getErrorsAtPath(errors)[0]).toEqual(
       expect.objectContaining({ type }),
     );
 
     const str = 'last Tuesday';
-    await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
+    await expect(validate(schema, str, options)).resolves.toEqual(
+      dateParser(str),
+    );
     const badSchema = createSchema({ tests: [{ type, value: 'flarfen' }] });
     await expect(validate(badSchema, str, options)).rejects.toThrow(
       'Could not convert flarfen (resolved: flarfen) to a valid date for comparison purposes',
@@ -79,14 +87,15 @@ describe('date - tests', () => {
   it('should validate min', async () => {
     const type = 'min';
     const schema = createSchema({ tests: [{ type, value: 'now' }] });
-    const options = createOptions();
     const errors = await getErrorsAsync(schema, 'yesterday', options);
     expect(getErrorsAtPath(errors)[0]).toEqual(
       expect.objectContaining({ type }),
     );
 
     const str = 'next Tuesday';
-    await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
+    await expect(validate(schema, str, options)).resolves.toEqual(
+      dateParser(str),
+    );
 
     const badSchema = createSchema({ tests: [{ type, value: 'flarfen' }] });
     await expect(validate(badSchema, str, options)).rejects.toThrow(
@@ -99,13 +108,14 @@ describe('date - tests', () => {
     const schema = createSchema({
       tests: [{ type, min: '1 hour ago', max: 'now' }],
     });
-    const options = createOptions();
     const errors = await getErrorsAsync(schema, 'yesterday', options);
     expect(getErrorsAtPath(errors)[0]).toEqual(
       expect.objectContaining({ type }),
     );
 
     const str = '30 minutes ago';
-    await expect(validate(schema, str, options)).resolves.toEqual(parser(str));
+    await expect(validate(schema, str, options)).resolves.toEqual(
+      dateParser(str),
+    );
   });
 });

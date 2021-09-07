@@ -1,45 +1,35 @@
-import mixed from '../../src/schemas/mixed';
 import { validate } from '../../src';
 import {
   getErrorsAsync,
   getErrorsAtPath,
   createSchemaCreator,
-  createOptionsCreator,
 } from '../fixtures';
 
 describe('mixed - tests', () => {
   const createSchema = createSchemaCreator('mixed');
-  const createOptions = createOptionsCreator({ mixed });
   it('should validate', async () => {
-    await expect(
-      validate(createSchema(), 'fred', createOptions()),
-    ).resolves.toBe('fred');
+    await expect(validate(createSchema(), 'fred')).resolves.toBe('fred');
   });
 
   it('should resolve at notNullable error', async () => {
     const schema = createSchema();
-    const options = createOptions();
-    const errors = getErrorsAtPath(await getErrorsAsync(schema, null, options));
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, null));
     expect(errors).toHaveLength(1);
     expect(errors[0]).toEqual(expect.objectContaining({ type: 'notNullable' }));
   });
 
   it('should allow nullable', async () => {
     const schema = createSchema({ nullable: true });
-    const options = createOptions();
-    const errors = await getErrorsAsync(schema, null, options);
+    const errors = await getErrorsAsync(schema, null);
     expect(errors).toHaveLength(0);
   });
 
   it('should validate is', async () => {
-    const options = createOptions();
     const type = 'is';
     const schema = createSchema({ tests: [{ type, value: 'joe' }] });
-    await expect(validate(schema, 'joe', options)).resolves.toBe('joe');
+    await expect(validate(schema, 'joe')).resolves.toBe('joe');
 
-    const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'jim', options),
-    );
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, 'jim'));
     expect(errors).toContainEqual(
       expect.objectContaining({
         type,
@@ -54,15 +44,11 @@ describe('mixed - tests', () => {
     const type = 'is';
     const schema = createSchema({ tests: [{ type, value }] });
     await expect(
-      validate(schema, 'joe', createOptions({ context: { a: 'joe' } })),
+      validate(schema, 'joe', { context: { a: 'joe' } }),
     ).resolves.toBe('joe');
 
     const errors = getErrorsAtPath(
-      await getErrorsAsync(
-        schema,
-        'joe',
-        createOptions({ context: { a: 'fred' } }),
-      ),
+      await getErrorsAsync(schema, 'joe', { context: { a: 'fred' } }),
     );
 
     expect(errors).toContainEqual(
@@ -77,15 +63,12 @@ describe('mixed - tests', () => {
   });
 
   it('should validate is with a schema', async () => {
-    const options = createOptions();
     const type = 'is';
     const refSchema = { type: 'mixed', tests: [{ type, value: 'joe' }] };
     const schema = createSchema({ tests: [{ type, schema: refSchema }] });
-    await expect(validate(schema, 'joe', options)).resolves.toBe('joe');
+    await expect(validate(schema, 'joe')).resolves.toBe('joe');
 
-    const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'jim', options),
-    );
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, 'jim'));
     expect(errors).toContainEqual(
       expect.objectContaining({
         type,
@@ -99,12 +82,11 @@ describe('mixed - tests', () => {
     const refSchema = { ref };
     const type = 'is';
     const context = { a: { type: 'mixed', tests: [{ type, value: 'joe' }] } };
-    const options = createOptions({ context });
     const schema = createSchema({ tests: [{ type, schema: refSchema }] });
-    await expect(validate(schema, 'joe', options)).resolves.toBe('joe');
+    await expect(validate(schema, 'joe', { context })).resolves.toBe('joe');
 
     const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'jim', options),
+      await getErrorsAsync(schema, 'jim', { context }),
     );
 
     expect(errors).toContainEqual(
@@ -120,14 +102,11 @@ describe('mixed - tests', () => {
   });
 
   it('should validate not', async () => {
-    const options = createOptions();
     const type = 'not';
     const schema = createSchema({ tests: [{ type, value: 'fred' }] });
-    await expect(validate(schema, 'joe', options)).resolves.toBe('joe');
+    await expect(validate(schema, 'joe')).resolves.toBe('joe');
 
-    const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'fred', options),
-    );
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, 'fred'));
     expect(errors).toContainEqual(
       expect.objectContaining({
         type,
@@ -142,15 +121,11 @@ describe('mixed - tests', () => {
     const type = 'not';
     const schema = createSchema({ tests: [{ type, value }] });
     await expect(
-      validate(schema, 'joe', createOptions({ context: { a: { b: 'fred' } } })),
+      validate(schema, 'joe', { context: { a: { b: 'fred' } } }),
     ).resolves.toBe('joe');
 
     const errors = getErrorsAtPath(
-      await getErrorsAsync(
-        schema,
-        'joe',
-        createOptions({ context: { a: { b: 'joe' } } }),
-      ),
+      await getErrorsAsync(schema, 'joe', { context: { a: { b: 'joe' } } }),
     );
 
     expect(errors).toContainEqual(
@@ -165,15 +140,12 @@ describe('mixed - tests', () => {
   });
 
   it('should validate not with a schema', async () => {
-    const options = createOptions();
     const type = 'not';
     const refSchema = { type: 'mixed', tests: [{ type, value: 'jim' }] };
     const schema = createSchema({ tests: [{ type, schema: refSchema }] });
-    await expect(validate(schema, 'jim', options)).resolves.toBe('jim');
+    await expect(validate(schema, 'jim')).resolves.toBe('jim');
 
-    const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'joe', options),
-    );
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, 'joe'));
     expect(errors).toContainEqual(
       expect.objectContaining({
         type,
@@ -187,12 +159,11 @@ describe('mixed - tests', () => {
     const refSchema = { ref };
     const type = 'not';
     const context = { a: { type: 'mixed', tests: [{ type, value: 'jim' }] } };
-    const options = createOptions({ context });
     const schema = createSchema({ tests: [{ type, schema: refSchema }] });
-    await expect(validate(schema, 'jim', options)).resolves.toBe('jim');
+    await expect(validate(schema, 'jim', { context })).resolves.toBe('jim');
 
     const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'joe', options),
+      await getErrorsAsync(schema, 'joe', { context }),
     );
 
     expect(errors).toContainEqual(
@@ -212,15 +183,11 @@ describe('mixed - tests', () => {
     const type = 'same';
     const schema = createSchema({ tests: [{ type, ref }] });
     await expect(
-      validate(schema, 'joe', createOptions({ context: { a: { b: 'joe' } } })),
+      validate(schema, 'joe', { context: { a: { b: 'joe' } } }),
     ).resolves.toBe('joe');
 
     const errors = getErrorsAtPath(
-      await getErrorsAsync(
-        schema,
-        'joe',
-        createOptions({ context: { a: { b: 'fred' } } }),
-      ),
+      await getErrorsAsync(schema, 'joe', { context: { a: { b: 'fred' } } }),
     );
     expect(errors).toContainEqual(
       expect.objectContaining({
@@ -239,15 +206,11 @@ describe('mixed - tests', () => {
     const type = 'different';
     const schema = createSchema({ tests: [{ type, ref }] });
     await expect(
-      validate(schema, 'joe', createOptions({ context: { a: { b: 'fred' } } })),
+      validate(schema, 'joe', { context: { a: { b: 'fred' } } }),
     ).resolves.toBe('joe');
 
     const errors = getErrorsAtPath(
-      await getErrorsAsync(
-        schema,
-        'joe',
-        createOptions({ context: { a: { b: 'joe' } } }),
-      ),
+      await getErrorsAsync(schema, 'joe', { context: { a: { b: 'joe' } } }),
     );
     expect(errors).toContainEqual(
       expect.objectContaining({
@@ -275,42 +238,28 @@ describe('mixed - tests', () => {
 
     // pass with values
     await expect(
-      validate(
-        createSchema({ tests: [{ type, values }] }),
-        'joe',
-        createOptions(),
-      ),
+      validate(createSchema({ tests: [{ type, values }] }), 'joe'),
     ).resolves.toBe('joe');
 
     // pass with values resolving a ref
     await expect(
-      validate(
-        createSchema({ tests: [{ type, values }] }),
-        'joe',
-        createOptions({ context: { a: { b: 'joe' } } }),
-      ),
+      validate(createSchema({ tests: [{ type, values }] }), 'joe', {
+        context: { a: { b: 'joe' } },
+      }),
     ).resolves.toBe('joe');
 
     // pass with schema
     await expect(
-      validate(
-        createSchema({ tests: [{ type, schemas }] }),
-        'bill',
-        createOptions(),
-      ),
+      validate(createSchema({ tests: [{ type, schemas }] }), 'bill'),
     ).resolves.toBe('bill');
 
     // pass with schemaRef
     await expect(
-      validate(
-        createSchema({ tests: [{ type, schemas }] }),
-        'buster',
-        createOptions({
-          context: {
-            c: { d: { type: 'mixed', tests: [{ type, values: ['buster'] }] } },
-          },
-        }),
-      ),
+      validate(createSchema({ tests: [{ type, schemas }] }), 'buster', {
+        context: {
+          c: { d: { type: 'mixed', tests: [{ type, values: ['buster'] }] } },
+        },
+      }),
     ).resolves.toBe('buster');
 
     // fail
@@ -318,7 +267,6 @@ describe('mixed - tests', () => {
       await getErrorsAsync(
         createSchema({ tests: [{ type, schemas, values }] }),
         'fred',
-        createOptions(),
       ),
     );
 
@@ -347,21 +295,13 @@ describe('mixed - tests', () => {
 
     // pass with values
     expect(
-      await validate(
-        createSchema({ tests: [{ type, values }] }),
-        'bill',
-        createOptions(),
-      ),
+      await validate(createSchema({ tests: [{ type, values }] }), 'bill'),
     ).toBe('bill');
 
     // fail with values
     expect(
       getErrorsAtPath(
-        await getErrorsAsync(
-          createSchema({ tests: [{ type, values }] }),
-          '1',
-          createOptions(),
-        ),
+        await getErrorsAsync(createSchema({ tests: [{ type, values }] }), '1'),
       ),
     ).toContainEqual(
       expect.objectContaining({
@@ -382,7 +322,7 @@ describe('mixed - tests', () => {
         await getErrorsAsync(
           createSchema({ tests: [{ type, values }] }),
           'fred',
-          createOptions({ context: { a: { b: 'fred' } } }),
+          { context: { a: { b: 'fred' } } },
         ),
       ),
     ).toContainEqual(
@@ -407,11 +347,7 @@ describe('mixed - tests', () => {
 
     // pass with schemas
     expect(
-      await validate(
-        createSchema({ tests: [{ type, schemas }] }),
-        'joe',
-        createOptions(),
-      ),
+      await validate(createSchema({ tests: [{ type, schemas }] }), 'joe'),
     ).toBe('joe');
 
     // fail with schemas
@@ -420,7 +356,6 @@ describe('mixed - tests', () => {
         await getErrorsAsync(
           createSchema({ tests: [{ type, schemas }] }),
           'jim',
-          createOptions(),
         ),
       ),
     ).toContainEqual(
@@ -443,7 +378,7 @@ describe('mixed - tests', () => {
         await getErrorsAsync(
           createSchema({ tests: [{ type, schemas }] }),
           'fred',
-          createOptions({ context: { c: { d: ref } } }),
+          { context: { c: { d: ref } } },
         ),
       ),
     ).toContainEqual(
@@ -461,17 +396,14 @@ describe('mixed - tests', () => {
   });
 
   it('should validate negate', async () => {
-    const options = createOptions();
     const type = 'negate';
     const test = { type: 'is', value: 'joe' };
     const schema = createSchema({
       tests: [{ type, test }],
     });
-    await expect(validate(schema, 'jim', options)).resolves.toBe('jim');
+    await expect(validate(schema, 'jim')).resolves.toBe('jim');
 
-    const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'joe', options),
-    );
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, 'joe'));
     expect(errors).toContainEqual(
       expect.objectContaining({
         type: 'notIs',
@@ -483,7 +415,6 @@ describe('mixed - tests', () => {
   });
 
   it('should validate combine', async () => {
-    const options = createOptions();
     const type = 'combine';
     const error = { type: 'notJoeOrFred' };
     const tests = [
@@ -499,11 +430,9 @@ describe('mixed - tests', () => {
     const schema = createSchema({
       tests: [{ type, tests, error }],
     });
-    await expect(validate(schema, 'jim', options)).resolves.toBe('jim');
+    await expect(validate(schema, 'jim')).resolves.toBe('jim');
 
-    const errors = getErrorsAtPath(
-      await getErrorsAsync(schema, 'fred', options),
-    );
+    const errors = getErrorsAtPath(await getErrorsAsync(schema, 'fred'));
     expect(errors).toContainEqual(
       expect.objectContaining({
         type: error.type,

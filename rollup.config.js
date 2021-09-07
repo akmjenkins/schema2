@@ -13,16 +13,6 @@ const COMMON = {
   plugins: [resolve(), babel(), bundlesize(), terser()],
 };
 
-const schema = (name) => ({
-  input: `src/schemas/${name}/index.js`,
-  output: {
-    file: `build/schemas/${name}.js`,
-    format: 'cjs',
-    exports: 'default',
-  },
-  ...COMMON,
-});
-
 export default [
   {
     input: MAIN,
@@ -32,20 +22,4 @@ export default [
     },
     ...COMMON,
   },
-  // full package
-  {
-    input: 'src/full.js',
-    output: {
-      file: 'build/full.js',
-      format: 'cjs',
-    },
-    ...COMMON,
-  },
-  schema('mixed'),
-  schema('boolean'),
-  schema('number'),
-  schema('string'),
-  schema('date'),
-  schema('object'),
-  schema('array'),
 ];

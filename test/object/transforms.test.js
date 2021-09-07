@@ -1,27 +1,22 @@
-import object from '../../src/schemas/object';
-import string from '../../src/schemas/string';
-import mixed from '../../src/schemas/mixed';
 import { cast } from '../../src';
-import { createSchemaCreator, createOptionsCreator } from '../fixtures';
+import { createSchemaCreator } from '../fixtures';
 
 describe('object - transforms', () => {
   const createSchema = createSchemaCreator('object');
-  const createOptions = createOptionsCreator({ object });
 
   it('should base transform', () => {
     const schema = createSchema();
-    const options = createOptions();
-    expect(() => cast(schema, '', options)).toThrowError();
-    expect(cast(schema, '{"first":"second"}', options)).toEqual({
+
+    expect(() => cast(schema, '')).toThrowError();
+    expect(cast(schema, '{"first":"second"}')).toEqual({
       first: 'second',
     });
-    expect(cast(schema, {}, options)).toEqual({});
-    expect(() => cast(schema, [], options)).toThrowError();
+    expect(cast(schema, {})).toEqual({});
+    expect(() => cast(schema, [])).toThrowError();
   });
 
   it('should allow keys', () => {
     const type = 'only';
-    const options = createOptions({ schemas: { string } });
     const schema = createSchema({
       transforms: [
         {
@@ -35,12 +30,11 @@ describe('object - transforms', () => {
     });
 
     const subject = { a: 1, b: 2, c: 3, d: 5 };
-    expect(cast(schema, subject, options)).toEqual({ a: 1, b: 2, c: 3 });
+    expect(cast(schema, subject)).toEqual({ a: 1, b: 2, c: 3 });
   });
 
   it('should exclude keys', () => {
     const type = 'except';
-    const options = createOptions({ schemas: { string } });
     const schema = createSchema({
       transforms: [
         {
@@ -54,12 +48,11 @@ describe('object - transforms', () => {
     });
 
     const subject = { a: 1, b: 2, c: 3, d: 5 };
-    expect(cast(schema, subject, options)).toEqual({ d: 5 });
+    expect(cast(schema, subject)).toEqual({ d: 5 });
   });
 
   it('should stripUnknown', () => {
     const type = 'stripUnknown';
-    const options = createOptions({ schemas: { mixed } });
     const schema = createSchema({
       inner: {
         a: { type: 'mixed' },
@@ -69,12 +62,11 @@ describe('object - transforms', () => {
       transforms: [{ type }],
     });
     const subject = { a: 1, b: 2, c: 3, d: 5 };
-    expect(cast(schema, subject, options)).toEqual({ a: 1, b: 2, c: 3 });
+    expect(cast(schema, subject)).toEqual({ a: 1, b: 2, c: 3 });
   });
 
   it('should transform keys', () => {
     const type = 'keys';
-    const options = createOptions({ schemas: { string } });
     const schema = createSchema({
       transforms: [
         {
@@ -84,6 +76,6 @@ describe('object - transforms', () => {
       ],
     });
     const subject = { a: 1, b: 2, c: 3, d: 5 };
-    expect(cast(schema, subject, options)).toEqual({ A: 1, B: 2, C: 3, D: 5 });
+    expect(cast(schema, subject)).toEqual({ A: 1, B: 2, C: 3, D: 5 });
   });
 });

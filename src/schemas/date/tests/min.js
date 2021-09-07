@@ -1,16 +1,14 @@
 import { isValidDate, getTersity } from '../utils';
 import { makeParams } from '../../utils';
 
-const min =
-  ({ parser }) =>
-  ({ value: v, inclusive = true, tersity }) =>
-  (value, { resolve, createError }) => {
+export default ({ value: v, inclusive = true, tersity }) =>
+  (value, { resolve, createError, dateParser }) => {
     const resolved = {
       value: resolve(v),
       tersity: resolve(tersity),
       inclusive: resolve(inclusive),
     };
-    const reference = parser(resolved.value);
+    const reference = dateParser(resolved.value);
     if (!isValidDate(reference))
       throw new Error(
         `Could not convert ${v} (resolved: ${resolved.value}) to a valid date for comparison purposes`,
@@ -23,5 +21,3 @@ const min =
       ? a >= b
       : a > b || createError(makeParams({ resolved }));
   };
-
-export default min;

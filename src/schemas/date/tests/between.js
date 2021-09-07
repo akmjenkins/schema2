@@ -1,18 +1,16 @@
 import { getTersity, isValidDate } from '../utils';
 import { makeParams } from '../../utils';
 
-const between =
-  ({ parser }) =>
-  ({ min, max, inclusive = true, tersity }) =>
-  (value, { resolve, createError }) => {
+export default ({ min, max, inclusive = true, tersity }) =>
+  (value, { resolve, createError, dateParser }) => {
     const resolved = {
       min: resolve(min),
       max: resolve(max),
       inclusive: resolve(inclusive),
       tersity: resolve(tersity),
     };
-    const minP = parser(resolved.min);
-    const maxP = parser(resolved.max);
+    const minP = dateParser(resolved.min);
+    const maxP = dateParser(resolved.max);
     if (!isValidDate(minP))
       throw new Error(
         `Could not convert ${min} (resolved: ${resolved.min}) to a valid date for comparison purposes`,
@@ -35,5 +33,3 @@ const between =
       createError(makeParams({ resolved }))
     );
   };
-
-export default between;

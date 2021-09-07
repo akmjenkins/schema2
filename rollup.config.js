@@ -1,25 +1,19 @@
-import babel from '@rollup/plugin-babel';
-import resolve from '@rollup/plugin-node-resolve';
-import bundlesize from 'rollup-plugin-bundle-size';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
-import pkg from './package.json';
-const MAIN = 'src/index.js';
+import sourcemaps from 'rollup-plugin-sourcemaps';
+import bundlesize from 'rollup-plugin-bundle-size';
+import { babel } from '@rollup/plugin-babel';
 
-const COMMON = {
-  external: {
-    ...pkg.dependencies,
-    ...pkg.peerDependencies,
-  },
-  plugins: [resolve(), babel(), bundlesize(), terser()],
-};
-
-export default [
-  {
-    input: MAIN,
-    output: {
-      file: 'build/index.js',
-      format: 'cjs',
+export default {
+  input: 'src/index.js',
+  output: [
+    {
+      sourcemap: true,
+      file: 'build/bundle.min.js',
+      format: 'iife',
+      name: 'schema2',
+      plugins: [bundlesize(), terser()],
     },
-    ...COMMON,
-  },
-];
+  ],
+  plugins: [nodeResolve(), babel({ babelHelpers: 'bundled' }), sourcemaps()],
+};

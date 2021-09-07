@@ -1,6 +1,11 @@
-# Schema2
+# Schema3
 
-Imagining a better JSON schema.
+[![npm version](https://img.shields.io/npm/v//schema2.svg)](https://npmjs.org/package/schema2)
+[![Coverage Status](https://coveralls.io/repos/github/akmjenkins/schema2/badge.svg)](https://coveralls.io/github/akmjenkins/schema2)
+![Build Status](https://github.com/akmjenkins/schema2/actions/workflows/main.yaml/badge.svg)
+[![Bundle Phobia](https://badgen.net/bundlephobia/minzip/schema2)](https://bundlephobia.com/result?p=schema2)
+
+Imagining a future JSON schema.
 
 ## Why?
 
@@ -8,7 +13,7 @@ Mainly because JSON schema's syntax is inconsistent. Every draft there are new k
 
 Popular validators like [ajv](https://github.com/ajv-validator/ajv) or [hyperjump](https://github.com/hyperjump-io/json-schema-validator) are undoubtedly powerful, but, having evolved with JSON schema, have lots of complex configuration options, inconsistent syntax, and have [become](https://bundlephobia.com/result?p=@hyperjump/json-schema) [bloated](https://bundlephobia.com/result?p=ajv).
 
-`schema2`, at it's core, is only about 2kb minzipped and under 6kb minzipped for all 7 schemas (mixed, number, boolean, string, date, object, array) including all 24 transformation operators and all 35 test operators.
+`schema2`, at it's core, is only about 2kb minzipped and under 7kb minzipped for all 7 schemas (mixed, number, boolean, string, date, object, array) including all 24 transformation operators and all 35 test operators.
 
 ## Keywords
 
